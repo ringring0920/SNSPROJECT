@@ -5,7 +5,7 @@ import React from 'react';
      return (
        <div>
          <h1>SNSアプリ</h1>
-         <MessageForm />  // MessageFormコンポーネントを表示
+         <MessageForm /> 
        </div>
      );
    };

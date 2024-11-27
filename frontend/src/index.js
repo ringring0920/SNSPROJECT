@@ -5,7 +5,7 @@ import React from 'react';
 
    ReactDOM.render(
      <React.StrictMode>
-       <App />  // Appコンポーネントのレンダリング
+       <App />  
      </React.StrictMode>,
      document.getElementById('root') // root要素にマウント
    );
