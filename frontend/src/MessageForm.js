@@ -1,31 +1,45 @@
 // frontend/src/MessageForm.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5000'); // サーバーのURLに接続
 
 const MessageForm = () => {
   const [text, setText] = useState("");
-  const [imageFile, setImageFile] = useState(null); // 画像ファイルを保持するための状態
+  const [imageFile, setImageFile] = useState(null);
   const [messages, setMessages] = useState([]);
 
+  // メッセージを取得する関数
   const fetchMessages = async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/messages');
-      setMessages(response.data);
+      setMessages(response.data); // メッセージの状態を更新
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
   };
 
+  // コンポーネントがマウントされたときにメッセージを取得
   useEffect(() => {
     fetchMessages();
+
+    // 新しいメッセージを受信するためのリスナーを追加
+    socket.on("messageAdded", (newMessage) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]); // 新しいメッセージを追加
+    });
+
+    // クリーンアップ関数：リスナーの解除
+    return () => {
+      socket.off("messageAdded");
+    };
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 画像ファイルをBase64に変換する
     let base64data = null;
-    if (imageFile) { // 画像ファイルが選択されている場合のみ
+    if (imageFile) {
       const reader = new FileReader();
       reader.readAsDataURL(imageFile);
       reader.onloadend = async () => {
@@ -41,14 +55,16 @@ const MessageForm = () => {
   };
 
   const postMessage = async (image = null) => {
-    const newMessage = { text, image }; // 画像を追加（なしの場合はnull）
+    const newMessage = { text, image }; // 新しいメッセージオブジェクトを作成
 
     try {
+      // サーバーにメッセージをまず送信
       await axios.post('http://localhost:5000/api/messages', newMessage);
+      // Socket.IOを使って新しいメッセージをイベントで送信
+      socket.emit("newMessage", newMessage);
       setText("");
-      setImageFile(null); // 入力をクリア
+      setImageFile(null); // フォームをクリア
       alert("メッセージが投稿されました！");
-      fetchMessages(); // 投稿後にメッセージを再取得
     } catch (error) {
       console.error("Error posting message:", error);
       alert("メッセージ投稿中にエラーが発生しました。");
@@ -66,9 +82,9 @@ const MessageForm = () => {
           required
         />
         <input
-          type="file" // ここでファイル選択の入力を追加
-          accept="image/*" // 画像ファイルのみを選択
-          onChange={(e) => setImageFile(e.target.files[0])} // ファイルをstateに保存
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImageFile(e.target.files[0])}
         />
         <button type="submit">投稿</button>
       </form>
