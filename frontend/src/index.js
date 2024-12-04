@@ -1,13 +1,18 @@
 import React from 'react';
-   import ReactDOM from 'react-dom';
-   import App from './App'; // Appコンポーネントをインポート
-   import reportWebVitals from './reportWebVitals';
+import ReactDOM from 'react-dom/client'; // 修正: react-dom/client をインポート
+import App from './App'; // Appコンポーネントをインポート
+import reportWebVitals from './reportWebVitals';
 
-   ReactDOM.render(
-     <React.StrictMode>
-       <App />  
-     </React.StrictMode>,
-     document.getElementById('root') // root要素にマウント
-   );
+// root要素を取得
+const rootElement = document.getElementById('root');
 
-   reportWebVitals();
+// createRoot を使ってレンダリング
+const root = ReactDOM.createRoot(rootElement);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// Web Vitalsの計測
+reportWebVitals();
