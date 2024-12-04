@@ -7,7 +7,7 @@ const socket = io('http://localhost:5000'); // サーバーのURLに接続
 
 const MessageForm = () => {
   const [text, setText] = useState("");
-  const [imageFile, setImageFile] = useState(null);
+  const [imageFile, setImageFile] = useState(null); // 画像ファイルを保持するための状態
   const [messages, setMessages] = useState([]);
 
   // メッセージを取得する関数
@@ -39,7 +39,7 @@ const MessageForm = () => {
     e.preventDefault();
 
     let base64data = null;
-    if (imageFile) {
+    if (imageFile) { // 画像ファイルが選択されている場合
       const reader = new FileReader();
       reader.readAsDataURL(imageFile);
       reader.onloadend = async () => {
@@ -82,9 +82,9 @@ const MessageForm = () => {
           required
         />
         <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImageFile(e.target.files[0])}
+          type="file" // ここでファイル選択の入力を追加
+          accept="image/*" // 画像ファイルのみを選択
+          onChange={(e) => setImageFile(e.target.files[0])} // ファイルをstateに保存
         />
         <button type="submit">投稿</button>
       </form>

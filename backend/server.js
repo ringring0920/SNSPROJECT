@@ -39,7 +39,6 @@ io.on("connection", (socket) => {
 
   // メッセージを受信したときの処理
   socket.on("newMessage", (message) => {
-    // メッセージをデータベースに保存
     const newMessage = new Message(message);
     newMessage.save()
       .then(savedMessage => {
@@ -51,7 +50,6 @@ io.on("connection", (socket) => {
       });
   });
 
-  // 切断時の処理
   socket.on("disconnect", () => {
     console.log("A user disconnected");
   });
