@@ -10,8 +10,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
+// CORS設定
+const corsOptions = {
+  origin: "http://localhost:3000", // ReactのURLを指定
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true, // 認証情報の送信を許可
+};
+
+app.use(cors(corsOptions)); // CORSミドルウェアを設定
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
@@ -29,9 +35,9 @@ const messageSchema = new mongoose.Schema({
 
 const Message = mongoose.model("Message", messageSchema);
 
-// HTTPサーバの作成
+// HTTPサーバーの作成
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, { cors: corsOptions }); // Socket.IOのCORS設定
 
 // Socket.IOでの接続処理
 io.on("connection", (socket) => {
@@ -42,7 +48,6 @@ io.on("connection", (socket) => {
     const newMessage = new Message(message);
     newMessage.save()
       .then(savedMessage => {
-        // すべてのクライアントに新しいメッセージを送信
         io.emit("messageAdded", savedMessage);
       })
       .catch(error => {
