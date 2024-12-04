@@ -51,7 +51,6 @@ io.on("connection", (socket) => {
       console.error("Error saving message:", error);
     }
   });
-  
 
   socket.on("disconnect", () => {
     console.log("A user disconnected");
@@ -82,6 +81,24 @@ app.get("/api/messages", async (req, res) => {
     res.status(500).json({ message: "メッセージの取得中にエラーが発生しました。" });
   }
 });
+
+// メッセージ削除APIエンドポイント
+app.delete("/api/messages/:id", async (req, res) => {
+  const { id } = req.params;
+  console.log(`Attempting to delete message with ID: ${id}`);
+  try {
+    const deletedMessage = await Message.findByIdAndDelete(id);
+    if (deletedMessage) {
+      res.status(200).json({ message: 'メッセージが削除されました。' });
+    } else {
+      res.status(404).json({ message: '指定されたメッセージが見つかりません。' });
+    }
+  } catch (error) {
+    console.error("Error deleting message:", error);
+    res.status(500).json({ message: "メッセージ削除中にエラーが発生しました。" });
+  }
+});
+
 
 // サーバー起動
 server.listen(PORT, () => {

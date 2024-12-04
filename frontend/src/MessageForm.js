@@ -87,6 +87,21 @@ const MessageForm = () => {
     }
   };
 
+  // メッセージを削除する関数
+  const deleteMessage = async (id) => {
+    console.log(`Deleting message with ID: ${id}`); // IDが正しいか確認
+    try {
+      await axios.delete(`http://localhost:5000/api/messages/${id}`);
+      setMessages((prevMessages) =>
+        prevMessages.filter((msg) => msg._id !== id)
+      );
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      alert('メッセージ削除中にエラーが発生しました。');
+    }
+  };
+  
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -116,6 +131,9 @@ const MessageForm = () => {
               {msg.image && (
                 <img src={msg.image} alt="投稿された画像" width="100" />
               )}
+              <button onClick={() => deleteMessage(msg._id)}>
+                削除
+              </button>
             </li>
           ))}
         </ul>
