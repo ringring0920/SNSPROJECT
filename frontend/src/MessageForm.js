@@ -38,6 +38,7 @@ const MessageForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // 画像ファイルをBase64に変換する
     let base64data = null;
     if (imageFile) { // 画像ファイルが選択されている場合
       const reader = new FileReader();
