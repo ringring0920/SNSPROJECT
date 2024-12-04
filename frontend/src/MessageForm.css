@@ -1,0 +1,78 @@
+/* ページ全体の背景色を設定 */
+body {
+  background-color: #ECF0F5;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* メインのフォームコンテナ */
+.message-form-container {
+  width: 90%;
+  max-width: 600px;
+  margin: 30px auto; /* ページの中央に配置 */
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #ffffff; /* フォームの背景色 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* その他の既存スタイル（変更なし） */
+.message-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.message-input,
+.message-file-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.message-submit-button {
+  padding: 10px;
+  background-color: #3C8DBC;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+}
+
+.message-submit-button:hover {
+  background-color: #4fa3d1;
+}
+
+.message-list {
+  margin-top: 20px;
+}
+
+.message-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.message-image {
+  max-width: 100%;
+  height: auto;
+  margin-top: 10px;
+}
+
+.message-delete-button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #ff6b6b;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+}
+
+.message-delete-button:hover {
+  background-color: #e63946;
+}

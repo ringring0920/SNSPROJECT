@@ -2,65 +2,61 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid'; // 一時ID用
+import './MessageForm.css'; 
 
 const socket = io('http://localhost:5000'); // サーバーのURLに接続
 
 const MessageForm = () => {
   const [text, setText] = useState('');
-  const [imageFile, setImageFile] = useState(null); // 画像ファイルを保持するための状態
+  const [imageFile, setImageFile] = useState(null);
   const [messages, setMessages] = useState([]);
 
-  // メッセージを取得する関数
-  const fetchMessages = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/api/messages');
-      setMessages(response.data); // メッセージの状態を更新
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-    }
-  };
-
-  // コンポーネントがマウントされたときにメッセージを取得
+  // メッセージを取得
   useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/messages');
+        setMessages(response.data);
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+        alert('メッセージの取得中にエラーが発生しました。');
+      }
+    };
+
     fetchMessages();
 
-    // 新しいメッセージを受信するためのリスナーを追加
+    // ソケットイベントリスナーの設定
     socket.on('messageAdded', (newMessage) => {
       setMessages((prevMessages) => {
-        // 重複防止：IDで確認
         const exists = prevMessages.some((msg) => msg._id === newMessage._id);
         return exists ? prevMessages : [...prevMessages, newMessage];
       });
     });
 
-    // クリーンアップ関数：リスナーの解除
     return () => {
       socket.off('messageAdded');
     };
   }, []);
 
+  // メッセージ投稿
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const tempId = uuidv4(); // 仮ID
 
-    // 一時IDを生成
-    const tempId = uuidv4();
-
-    // 画像ファイルをBase64に変換する
     if (imageFile) {
       const reader = new FileReader();
       reader.readAsDataURL(imageFile);
-      reader.onloadend = async () => {
-        const base64data = reader.result;
-        await postMessage({ text, image: base64data, _id: tempId });
+      reader.onloadend = () => {
+        postMessage({ text, image: reader.result, _id: tempId });
       };
-      reader.onerror = (error) => console.error('Error loading image:', error);
+      reader.onerror = () => alert('画像の読み込み中にエラーが発生しました。');
     } else {
-      await postMessage({ text, image: null, _id: tempId });
+      postMessage({ text, image: null, _id: tempId });
     }
   };
 
+  // サーバーにメッセージを送信
   const postMessage = async (message) => {
-    // 投稿直後に仮メッセージをローカルに追加
     setMessages((prevMessages) => [...prevMessages, message]);
 
     try {
@@ -69,27 +65,29 @@ const MessageForm = () => {
         image: message.image,
       });
 
-      // サーバーのメッセージデータに仮メッセージを置き換える
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
           msg._id === message._id ? response.data : msg
         )
       );
-      setText('');
-      setImageFile(null); // フォームをリセット
+      resetForm();
     } catch (error) {
       console.error('Error posting message:', error);
       alert('メッセージ投稿中にエラーが発生しました。');
-      // 投稿失敗時に仮メッセージを削除
       setMessages((prevMessages) =>
         prevMessages.filter((msg) => msg._id !== message._id)
       );
     }
   };
 
-  // メッセージを削除する関数
-  const deleteMessage = async (id) => {
-    console.log(`Deleting message with ID: ${id}`); // IDが正しいか確認
+  // フォームをリセット
+  const resetForm = () => {
+    setText('');
+    setImageFile(null);
+  };
+
+  // メッセージ削除
+  const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/messages/${id}`);
       setMessages((prevMessages) =>
@@ -100,44 +98,51 @@ const MessageForm = () => {
       alert('メッセージ削除中にエラーが発生しました。');
     }
   };
-  
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <div className="message-form-container">
+      <form onSubmit={handleSubmit} className="message-form">
         <input
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="メッセージを入力"
           required
+          className="message-input"
         />
         <input
           type="file"
           accept="image/*"
           onChange={(e) => setImageFile(e.target.files[0])}
+          className="message-file-input"
         />
-        <button type="submit">投稿</button>
+        <button type="submit" className="message-submit-button">
+          投稿
+        </button>
       </form>
 
-      <div>
-        <h2>投稿されたメッセージ</h2>
-        <ul>
-          {messages.map((msg) => (
-            <li key={msg._id || msg.tempId}>
-              <p>
-                <strong>メッセージ:</strong> {msg.text}
-              </p>
-              {msg.image && (
-                <img src={msg.image} alt="投稿された画像" width="100" />
-              )}
-              <button onClick={() => deleteMessage(msg._id)}>
-                削除
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <div className="message-list">
+  <h2>投稿されたメッセージ</h2>
+  <ul>
+    {[...messages].reverse().map((msg) => (
+      <li key={msg._id || msg.tempId} className="message-item">
+        <p className="message-text">
+          <strong>メッセージ:</strong> {msg.text}
+        </p>
+        {msg.image && (
+          <img src={msg.image} alt="投稿された画像" className="message-image" />
+        )}
+        <button
+          onClick={() => handleDelete(msg._id)}
+          className="message-delete-button"
+        >
+          削除
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>
+
     </div>
   );
 };
