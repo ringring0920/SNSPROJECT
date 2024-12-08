@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
-import { v4 as uuidv4 } from 'uuid'; // 仮ID用
+import { v4 as uuidv4 } from 'uuid'; // 一時ID用
 import './MessageForm.css'; 
 
-const socket = io('http://localhost:5000'); // Socket.IOサーバに接続
+const socket = io('http://localhost:5000'); // サーバーのURLに接続
 
 const MessageForm = () => {
   const [text, setText] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [messages, setMessages] = useState([]);
 
-  // 初回レンダリング時のデータ取得とソケットリスナーの設定
+  // メッセージを取得
   useEffect(() => {
     const fetchMessages = async () => {
       try {
@@ -27,25 +27,21 @@ const MessageForm = () => {
 
     // ソケットイベントリスナーの設定
     socket.on('messageAdded', (newMessage) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-    });
-
-    socket.on('messageDeleted', (id) => {
-      setMessages((prevMessages) =>
-        prevMessages.filter((msg) => msg._id !== id)
-      );
+      setMessages((prevMessages) => {
+        const exists = prevMessages.some((msg) => msg._id === newMessage._id);
+        return exists ? prevMessages : [...prevMessages, newMessage];
+      });
     });
 
     return () => {
       socket.off('messageAdded');
-      socket.off('messageDeleted');
     };
   }, []);
 
   // メッセージ投稿
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const tempId = uuidv4(); // 仮のIDを生成
+    const tempId = uuidv4(); // 仮ID
 
     if (imageFile) {
       const reader = new FileReader();
@@ -74,7 +70,6 @@ const MessageForm = () => {
           msg._id === message._id ? response.data : msg
         )
       );
-      socket.emit('messageAdded', response.data); // サーバーに新規メッセージを通知
       resetForm();
     } catch (error) {
       console.error('Error posting message:', error);
@@ -85,11 +80,16 @@ const MessageForm = () => {
     }
   };
 
+  // フォームをリセット
+  const resetForm = () => {
+    setText('');
+    setImageFile(null);
+  };
+
   // メッセージ削除
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/messages/${id}`);
-      socket.emit('messageDeleted', id); // サーバーに削除を通知
       setMessages((prevMessages) =>
         prevMessages.filter((msg) => msg._id !== id)
       );
@@ -97,12 +97,6 @@ const MessageForm = () => {
       console.error('Error deleting message:', error);
       alert('メッセージ削除中にエラーが発生しました。');
     }
-  };
-
-  // フォームリセット
-  const resetForm = () => {
-    setText('');
-    setImageFile(null);
   };
 
   return (
@@ -128,30 +122,27 @@ const MessageForm = () => {
       </form>
 
       <div className="message-list">
-        <h2>投稿されたメッセージ</h2>
-        <ul>
-          {[...messages].reverse().map((msg) => (
-            <li key={msg._id || msg.tempId} className="message-item">
-              <p className="message-text">
-                <strong>メッセージ:</strong> {msg.text}
-              </p>
-              {msg.image && (
-                <img
-                  src={msg.image}
-                  alt="投稿された画像"
-                  className="message-image"
-                />
-              )}
-              <button
-                onClick={() => handleDelete(msg._id)}
-                className="message-delete-button"
-              >
-                削除
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+  <h2>投稿されたメッセージ</h2>
+  <ul>
+    {[...messages].reverse().map((msg) => (
+      <li key={msg._id || msg.tempId} className="message-item">
+        <p className="message-text">
+          <strong>メッセージ:</strong> {msg.text}
+        </p>
+        {msg.image && (
+          <img src={msg.image} alt="投稿された画像" className="message-image" />
+        )}
+        <button
+          onClick={() => handleDelete(msg._id)}
+          className="message-delete-button"
+        >
+          削除
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>
+
     </div>
   );
 };
