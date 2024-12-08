@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5000;
 
 // CORS設定
 const corsOptions = {
-  origin: "*",
+  origin: "*", // 任意のオリジンを許可
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
     try {
       const newMessage = new Message(message);
       const savedMessage = await newMessage.save();
-      io.emit("messageAdded", savedMessage);
+      io.emit("messageAdded", savedMessage); // 新しいメッセージを全クライアントに通知
     } catch (error) {
       console.error("Error saving message:", error);
     }
@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// メッセージAPIエンドポイント
+// メッセージAPIエンドポイント: メッセージを保存
 app.post("/api/messages", async (req, res) => {
   try {
     const newMessage = new Message({
@@ -72,6 +72,7 @@ app.post("/api/messages", async (req, res) => {
   }
 });
 
+// メッセージAPIエンドポイント: メッセージの取得
 app.get("/api/messages", async (req, res) => {
   try {
     const messages = await Message.find();
@@ -98,7 +99,6 @@ app.delete("/api/messages/:id", async (req, res) => {
     res.status(500).json({ message: "メッセージ削除中にエラーが発生しました。" });
   }
 });
-
 
 // サーバー起動
 server.listen(PORT, () => {
