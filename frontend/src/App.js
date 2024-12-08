@@ -1,13 +1,17 @@
+// src/App.js
 import React from 'react';
-   import MessageForm from './MessageForm';  // MessageFormをインポート
+import { SocketProvider } from './components/SocketProvider'; // 追加: SocketProviderをインポート
+import MessageForm from './MessageForm'; // もともとのMessageFormをここでインポート
 
-   const App = () => {
-     return (
-       <div>
-         <h1>SNSアプリ</h1>
-         <MessageForm /> 
-       </div>
-     );
-   };
+const App = () => {
+  return (
+    <SocketProvider>  {/* SocketProviderでラップ */}
+      <div>
+        <h1>SNSアプリ</h1>
+        <MessageForm />
+      </div>
+    </SocketProvider>
+  );
+};
 
-   export default App;
+export default App;
