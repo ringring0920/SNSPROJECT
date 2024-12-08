@@ -41,14 +41,26 @@ const io = socketIo(server, { cors: corsOptions });
 io.on("connection", (socket) => {
   console.log("A user connected");
 
-  // メッセージ送信イベント
+  // 新しいメッセージの通知
   socket.on("newMessage", async (message) => {
     try {
       const newMessage = new Message(message);
       const savedMessage = await newMessage.save();
-      io.emit("messageAdded", savedMessage);
+      io.emit("messageAdded", savedMessage); // 全てのクライアントに新しいメッセージを通知
     } catch (error) {
       console.error("Error saving message:", error);
+    }
+  });
+
+  // メッセージ削除の通知
+  socket.on("deleteMessage", async (id) => {
+    try {
+      const deletedMessage = await Message.findByIdAndDelete(id);
+      if (deletedMessage) {
+        io.emit("messageDeleted", id); // 全てのクライアントに削除通知
+      }
+    } catch (error) {
+      console.error("Error deleting message:", error);
     }
   });
 
@@ -65,6 +77,7 @@ app.post("/api/messages", async (req, res) => {
       image: req.body.image || null,
     });
     const savedMessage = await newMessage.save();
+    io.emit("messageAdded", savedMessage); // API経由で追加されたメッセージも通知
     res.status(201).json(savedMessage);
   } catch (error) {
     console.error("Error saving message:", error);
@@ -85,20 +98,19 @@ app.get("/api/messages", async (req, res) => {
 // メッセージ削除APIエンドポイント
 app.delete("/api/messages/:id", async (req, res) => {
   const { id } = req.params;
-  console.log(`Attempting to delete message with ID: ${id}`);
   try {
     const deletedMessage = await Message.findByIdAndDelete(id);
     if (deletedMessage) {
-      res.status(200).json({ message: 'メッセージが削除されました。' });
+      io.emit("messageDeleted", id); // API経由で削除されたメッセージも通知
+      res.status(200).json({ message: "メッセージが削除されました。" });
     } else {
-      res.status(404).json({ message: '指定されたメッセージが見つかりません。' });
+      res.status(404).json({ message: "指定されたメッセージが見つかりません。" });
     }
   } catch (error) {
     console.error("Error deleting message:", error);
     res.status(500).json({ message: "メッセージ削除中にエラーが発生しました。" });
   }
 });
-
 
 // サーバー起動
 server.listen(PORT, () => {
