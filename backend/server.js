@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5000;
 
 // CORS設定
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "*",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
