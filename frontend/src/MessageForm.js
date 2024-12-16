@@ -7,9 +7,9 @@ import './MessageForm.css';
 const socket = io('http://localhost:5000'); // サーバーのURLに接続
 
 const MessageForm = () => {
-  const [text, setText] = useState('');
-  const [imageFile, setImageFile] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const [text, setText] = useState(''); // メッセージ入力用ステート
+  const [imageFile, setImageFile] = useState(null); // 画像ファイル用ステート
+  const [messages, setMessages] = useState([]); // メッセージリスト用ステート
 
   // メッセージを取得
   useEffect(() => {
@@ -122,27 +122,26 @@ const MessageForm = () => {
       </form>
 
       <div className="message-list">
-  <h2>投稿されたメッセージ</h2>
-  <ul>
-    {[...messages].reverse().map((msg) => (
-      <li key={msg._id || msg.tempId} className="message-item">
-        <p className="message-text">
-          <strong>メッセージ:</strong> {msg.text}
-        </p>
-        {msg.image && (
-          <img src={msg.image} alt="投稿された画像" className="message-image" />
-        )}
-        <button
-          onClick={() => handleDelete(msg._id)}
-          className="message-delete-button"
-        >
-          削除
-        </button>
-      </li>
-    ))}
-  </ul>
-</div>
-
+        <h2>投稿されたメッセージ</h2>
+        <ul>
+          {[...messages].reverse().map((msg) => (
+            <li key={msg._id || msg.tempId} className="message-item">
+              <p className="message-text">
+                <strong>メッセージ:</strong> {msg.text}
+              </p>
+              {msg.image && (
+                <img src={msg.image} alt="投稿された画像" className="message-image" />
+              )}
+              <button
+                onClick={() => handleDelete(msg._id)}
+                className="message-delete-button"
+              >
+                削除
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

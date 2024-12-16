@@ -1,78 +1,153 @@
-/* ページ全体の背景色を設定 */
-body {
-  background-color: #ECF0F5;
+* {
   margin: 0;
-  font-family: Arial, sans-serif;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* メインのフォームコンテナ */
-.message-form-container {
-  width: 90%;
-  max-width: 600px;
-  margin: 30px auto; /* ページの中央に配置 */
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #ffffff; /* フォームの背景色 */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #000; 
+  color: #000; 
+  transition: background-color 0.3s, color 0.3s;
 }
 
-/* その他の既存スタイル（変更なし） */
-.message-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.message-input,
-.message-file-input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.message-submit-button {
-  padding: 10px;
-  background-color: #3C8DBC;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  color: white;
+h1 {
+  text-align: center;
+  color: #ffffff;
+  margin-top: 20px;
+  font-size: 2.7em;
   font-weight: bold;
 }
 
-.message-submit-button:hover {
-  background-color: #4fa3d1;
+h2 {
+  text-align: center;
+  color: #000;
+  margin-top: 20px;
+  font-size: 1.7em;
+  font-weight: bold;
 }
 
-.message-list {
-  margin-top: 20px;
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #1e1e1e; 
+  border-radius: 10px;
+  transition: box-shadow 0.6s;
+}
+
+.container:hover {
+  box-shadow:#000;
+}
+
+.message-input {
+  width: 100%; 
+  height: 40px; 
+  font-size: 16px; 
+  padding: 10px; 
+  border-radius: 100px; 
+  border: 1px solid #ffffff; 
+}
+
+.message-submit-button {
+  width: 100%; 
+  height: 40px; 
+  font-size: 16px; 
+  padding: 10px; 
+  border-radius: 100px; 
+  border: 1px solid #ffffff; 
+  background-color: #007bff; 
+  color: white; 
+  border: none; 
+  cursor: pointer; 
+}
+
+.message-submit-button:hover {
+  background-color: #0056b3; 
+}
+
+.input-field {
+  padding: 20px;
+  border: 1px solid #555; 
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 10em;
+  background-color: #333; 
+  color: #ffffff; 
+  transition: border-color 0.3s;
+}
+
+.input-field:focus {
+  border-color: #007bff; 
+  outline: none;
+}
+
+.submit-button {
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff; 
+  color: white;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+  background-color: #004494;
+}
+
+.parallax {
+  background-image: url('https://source.unsplash.com/random/1920x1080');
+  height: 100vh;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+.content {
+  height: 200vh; 
+  background: #121212; 
+  padding: 20px;
+  text-align: center;
+}
+
+.spacer {
+  height: 100vh; 
 }
 
 .message-item {
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #fff;
+  background-color: #0056b3; 
+  border: 1px solid #0056b3;
+  border-radius: 8px; 
+  padding: 15px; 
+  margin: 10px 0; 
+  transition: background-color 0.3s; 
+  position: relative; 
 }
 
-.message-image {
-  max-width: 100%;
-  height: auto;
-  margin-top: 10px;
+.message-popup {
+  display: none; 
+  position: absolute;
+  top: 50%; 
+  left: 100%; 
+  transform: translateY(-50%); 
+  background-color: #0056b3; 
+  border: 1px solid #ccc; 
+  border-radius: 20px; 
+  padding: 10px; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+  z-index: 10; 
 }
 
-.message-delete-button {
-  margin-top: 10px;
-  padding: 5px 10px;
-  background-color: #ff6b6b;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  cursor: pointer;
-}
-
-.message-delete-button:hover {
-  background-color: #e63946;
+.message-item:hover {
+  background-color: hsla(353, 10%, 17%, 0.553);; 
 }

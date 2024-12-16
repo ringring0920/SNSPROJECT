@@ -1,42 +1,91 @@
-.App {
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh; /* Ensure the whole viewport height is used */
+body {
+  background: url('https://example.com/your-background-image.jpg') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  font-family: Arial, sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.message-form-container {
+  width: 90%;
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.9); 
+  box-shadow: 0 4px 6px rgb(255, 255, 255);
+  backdrop-filter: blur(10px); 
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.message-form {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  gap: 15px;
+}
+
+.message-input,
+.message-file-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s; 
+}
+
+.message-input:focus,
+.message-file-input:focus {
+  border-color: #3C8DBC; 
+  outline: none;
+}
+
+.message-submit-button {
+  padding: 10px;
+  background-color: #3C8DBC;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
   color: white;
+  font-weight: bold;
+  transition: background-color 0.3s; 
 }
 
-.App-link {
-  color: #61dafb;
+.message-submit-button:hover {
+  background-color: #0000CD;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.message-list {
+  margin-top: 20px;
+}
+
+.message-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: transform 0.3s; 
+}
+
+.message-image {
+  max-width: 100%;
+  height: auto;
+  margin-top: 10px;
+}
+
+.message-delete-button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #ff6b6b;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s; 
+}
+
+.message-delete-button:hover {
+  background-color: hsla(355, 38%, 32%, 0.132);
+}
+
+.message-item:hover {
+  transform: translateY(-12.5px); 
 }
