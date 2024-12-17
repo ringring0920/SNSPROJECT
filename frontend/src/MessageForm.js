@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import './MessageForm.css';
 import { Modal, Button } from 'react-bootstrap';
 
-const socket = io('http://localhost:5000');
+const socket = io('https://snsproject-920e79757d01.herokuapp.com/');
 
 const MessageForm = () => {
   const [text, setText] = useState('');
