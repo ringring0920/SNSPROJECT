@@ -1,5 +1,4 @@
 const express = require("express");
-const http = require("http");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
@@ -10,20 +9,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // CORS設定
-const corsOptions = {
-  origin: "*", // 任意のオリジンを許可
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
-app.use(express.json({ limit: '5mb' }));
-app.use(express.urlencoded({ limit: '5mb', extended: true }));
+app.use(cors({ origin: "*", methods: "GET,HEAD,PUT,PATCH,POST,DELETE" }));
+app.use(express.json({ limit: "5mb" }));
+app.use(express.urlencoded({ limit: "5mb", extended: true }));
 
 // MongoDB接続
-mongoose.connect("mongodb://127.0.0.1:27017/mydb")
+mongoose
+  .connect("mongodb://127.0.0.1:27017/mydb")
   .then(() => console.log("MongoDB successfully connected"))
-  .catch(err => console.error("MongoDB connection error:", err));
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 // メッセージスキーマとモデル
 const messageSchema = new mongoose.Schema({
@@ -33,7 +27,9 @@ const messageSchema = new mongoose.Schema({
 });
 const Message = mongoose.model("Message", messageSchema);
 
-// メッセージAPIエンドポイント: メッセージを保存
+// メッセージAPIエンドポイント
+
+// 新しいメッセージを投稿
 app.post("/api/messages", async (req, res) => {
   try {
     const newMessage = new Message({
@@ -48,10 +44,10 @@ app.post("/api/messages", async (req, res) => {
   }
 });
 
-// メッセージAPIエンドポイント: メッセージの取得
+// メッセージを取得（最新順）
 app.get("/api/messages", async (req, res) => {
   try {
-    const messages = await Message.find();
+    const messages = await Message.find().sort({ createdAt: -1 }); // 最新順
     res.status(200).json(messages);
   } catch (error) {
     console.error("Error fetching messages:", error);
@@ -59,16 +55,15 @@ app.get("/api/messages", async (req, res) => {
   }
 });
 
-// メッセージ削除APIエンドポイント
+// メッセージを削除
 app.delete("/api/messages/:id", async (req, res) => {
   const { id } = req.params;
-  console.log(`Attempting to delete message with ID: ${id}`);
   try {
     const deletedMessage = await Message.findByIdAndDelete(id);
     if (deletedMessage) {
-      res.status(200).json({ message: 'メッセージが削除されました。' });
+      res.status(200).json({ message: "メッセージが削除されました。" });
     } else {
-      res.status(404).json({ message: '指定されたメッセージが見つかりません。' });
+      res.status(404).json({ message: "指定されたメッセージが見つかりません。" });
     }
   } catch (error) {
     console.error("Error deleting message:", error);
@@ -77,7 +72,6 @@ app.delete("/api/messages/:id", async (req, res) => {
 });
 
 // サーバー起動
-const server = http.createServer(app);
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

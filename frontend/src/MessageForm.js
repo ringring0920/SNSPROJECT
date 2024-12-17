@@ -8,24 +8,37 @@ const MessageForm = () => {
   const [text, setText] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
+  // メッセージを取得
   useEffect(() => {
     const fetchMessages = async () => {
+      setIsLoading(true);
       try {
         const response = await axios.get('http://localhost:5000/api/messages');
         setMessages(response.data);
+        setErrorMessage('');
       } catch (error) {
         console.error('Error fetching messages:', error);
-        alert('メッセージの取得中にエラーが発生しました。');
+        setErrorMessage('メッセージの取得中にエラーが発生しました。');
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchMessages();
   }, []);
-  
+
+  // フォーム送信処理
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!text.trim() && !imageFile) {
+      alert('メッセージまたは画像を入力してください。');
+      return;
+    }
+
     const tempId = uuidv4();
     if (imageFile) {
       const reader = new FileReader();
@@ -38,15 +51,17 @@ const MessageForm = () => {
       postMessage({ text, image: null, _id: tempId });
     }
   };
+
+  // メッセージ投稿処理
   const postMessage = async (message) => {
     const updatedMessages = [...messages, message];
     setMessages(updatedMessages);
+
     try {
       const response = await axios.post('http://localhost:5000/api/messages', {
         text: message.text,
         image: message.image,
       });
-      console.log("Server Response:", JSON.stringify(response.data, null, 2));
       setMessages((prevMessages) =>
         prevMessages.map((msg) => (msg._id === message._id ? response.data : msg))
       );
@@ -54,14 +69,17 @@ const MessageForm = () => {
     } catch (error) {
       console.error('Error posting message:', error);
       alert('メッセージ投稿中にエラーが発生しました。');
-      // エラーが発生した場合は一時的に追加したメッセージを削除
       setMessages(updatedMessages.filter((msg) => msg._id !== message._id));
     }
   };
+
+  // フォームリセット
   const resetForm = () => {
     setText('');
     setImageFile(null);
   };
+
+  // メッセージ削除処理
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/messages/${id}`);
@@ -72,12 +90,17 @@ const MessageForm = () => {
       alert(`メッセージ削除中にエラーが発生しました: ${error.response ? error.response.data.message : error.message}`);
     }
   };
+
+  // モーダルを開く
   function openModal(id) {
     setDeleteId(id);
     setShowModal(true);
   }
+
   return (
     <div>
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -91,16 +114,22 @@ const MessageForm = () => {
         />
         <Button type="submit">送信</Button>
       </form>
-      <div className="message-list">
-        {messages.slice().reverse().map((msg) => (
-          <div key={msg._id} className="message-item">
-            <p>{msg.text}</p>
-            <Button variant="danger" onClick={() => openModal(msg._id)}>
-              削除
-            </Button>
-          </div>
-        ))}
-      </div>
+
+      {isLoading ? (
+        <p>読み込み中...</p>
+      ) : (
+        <div className="message-list">
+          {messages.map((msg) => (
+            <div key={msg._id} className="message-item">
+              <p>{msg.text}</p>
+              <Button variant="danger" onClick={() => openModal(msg._id)}>
+                削除
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+
       <Modal show={showModal} onHide={() => setShowModal(false)} className="custom-modal">
         <Modal.Header>
           <span className="close-button" onClick={() => setShowModal(false)}>&times;</span>
@@ -111,8 +140,7 @@ const MessageForm = () => {
           <Button variant="secondary" onClick={() => setShowModal(false)} className="footer-button">
             キャンセル
           </Button>
-
-<Button variant="danger" onClick={() => handleDelete(deleteId)} className="footer-button">
+          <Button variant="danger" onClick={() => handleDelete(deleteId)} className="footer-button">
             削除
           </Button>
         </Modal.Footer>
@@ -120,4 +148,5 @@ const MessageForm = () => {
     </div>
   );
 };
+
 export default MessageForm;
