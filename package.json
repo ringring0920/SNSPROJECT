@@ -1,0 +1,27 @@
+{
+  "name": "snsproject",
+  "version": "1.0.0",
+  "description": "Root project for SNSPROJECT, containing both frontend and backend.",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd frontend && npm start",
+    "backend": "cd backend && node server.js",
+    "dev": "concurrently \"npm run backend\" \"npm run start\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ringring0920/SNSPROJECT.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ringring0920/SNSPROJECT/issues"
+  },
+  "homepage": "https://github.com/ringring0920/SNSPROJECT#readme",
+  "dependencies": {
+    "concurrently": "^7.0.0",
+    "react-bootstrap": "^2.10.7"
+  }
+}
