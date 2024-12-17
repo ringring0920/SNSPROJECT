@@ -56,19 +56,25 @@ const MessageForm = () => {
   const postMessage = async (message) => {
     const updatedMessages = [...messages, message];
     setMessages(updatedMessages);
-
+  
     try {
       const response = await axios.post('http://localhost:5000/api/messages', {
         text: message.text,
         image: message.image,
       });
-      setMessages((prevMessages) =>
+  
+      console.log("Server Response:", JSON.stringify(response.data, null, 2));
+  
+      setMessages((prevMessages) => 
         prevMessages.map((msg) => (msg._id === message._id ? response.data : msg))
       );
+  
       resetForm();
     } catch (error) {
       console.error('Error posting message:', error);
       alert('メッセージ投稿中にエラーが発生しました。');
+  
+      // エラーが発生した場合は一時的に追加したメッセージを削除
       setMessages(updatedMessages.filter((msg) => msg._id !== message._id));
     }
   };
