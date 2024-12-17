@@ -17,7 +17,7 @@ const MessageForm = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get('https://snsproject-920e79757d01.herokuapp.com/api/messages');
+        const response = await axios.get('http://localhost:5000/api/messages');
         setMessages(response.data);
       } catch (error) {
         console.error('Error fetching messages:', error);
@@ -61,7 +61,7 @@ const MessageForm = () => {
     setMessages(updatedMessages);
   
     try {
-      const response = await axios.post('https://snsproject-920e79757d01.herokuapp.com/api/messages', {
+      const response = await axios.post('http://localhost:5000/api/messages', {
         text: message.text,
         image: message.image,
       });
@@ -95,7 +95,7 @@ const MessageForm = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://snsproject-920e79757d01.herokuapp.com/api/messages/${id}`);
+      await axios.delete(`http://localhost:5000/api/messages/${id}`);
       setMessages((prevMessages) => prevMessages.filter((msg) => msg._id !== id));
       setShowModal(false);
     } catch (error) {
