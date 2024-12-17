@@ -22,6 +22,7 @@
   "homepage": "https://github.com/ringring0920/SNSPROJECT#readme",
   "dependencies": {
     "concurrently": "^7.0.0",
-    "react-bootstrap": "^2.10.7"
+    "react-bootstrap": "^2.10.7",
+    "react-scripts": "^5.0.1"
   }
 }
