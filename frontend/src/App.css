@@ -1,91 +1,46 @@
+
+/*背景*/
 body {
-  background: url('https://example.com/your-background-image.jpg') no-repeat center center fixed;
-  background-size: cover;
-  margin: 0;
-  font-family: Arial, sans-serif;
+  margin: 0; 
+  font-family: Arial, sans-serif; 
+  background-color: #252525; 
 }
 
-.message-form-container {
-  width: 90%;
-  max-width: 600px;
-  margin: 30px auto;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.9); 
-  box-shadow: 0 4px 6px rgb(255, 255, 255);
-  backdrop-filter: blur(10px); 
+/*送信された文字*/
+.container {
+  color: #ffffff;
+  padding: 20px; 
+  max-width: 800px; 
+  margin: 0 auto; 
 }
 
-.message-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+
+/*INIAD-SNS*/
+h1 {
+  font-family:sans-serif;
+  text-align: center; 
+  color: #ffffff; 
+  margin-bottom: 20px; 
 }
 
-.message-input,
-.message-file-input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  transition: border-color 0.3s; 
-}
 
-.message-input:focus,
-.message-file-input:focus {
-  border-color: #3C8DBC; 
-  outline: none;
-}
-
-.message-submit-button {
-  padding: 10px;
-  background-color: #3C8DBC;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  color: white;
-  font-weight: bold;
-  transition: background-color 0.3s; 
-}
-
-.message-submit-button:hover {
-  background-color: #0000CD;
-}
-
+/*メッセージ枠と送信ボタンの距離*/
 .message-list {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
+/* メッセージ枠　内部*/
 .message-item {
   margin-bottom: 15px;
   padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #fff;
+  border: 7px solid #ffffff; /*縁の色*/ 
+  border-radius: 27px; /*角の丸み*/
+  background-color: #040404;/*テキスト背景*/
   transition: transform 0.3s; 
 }
 
-.message-image {
-  max-width: 100%;
-  height: auto;
-  margin-top: 10px;
-}
 
-.message-delete-button {
-  margin-top: 10px;
-  padding: 5px 10px;
-  background-color: #ff6b6b;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s; 
-}
-
-.message-delete-button:hover {
-  background-color: hsla(355, 38%, 32%, 0.132);
-}
-
+/*メッセージ枠のホバー*/
 .message-item:hover {
-  transform: translateY(-12.5px); 
+  transform: translateY(-13px); 
 }

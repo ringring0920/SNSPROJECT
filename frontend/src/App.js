@@ -9,7 +9,6 @@ const App = () => {
     <SocketProvider>
       <div className="container">
         <h1>INIAD-SNS</h1>
-        
         <MessageForm />
       </div>
     </SocketProvider>
