@@ -23,6 +23,7 @@
   "dependencies": {
     "concurrently": "^7.0.0",
     "react-bootstrap": "^2.10.7",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "socket.io-client": "^4.8.1"
   }
 }
