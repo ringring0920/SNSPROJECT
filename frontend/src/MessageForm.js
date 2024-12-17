@@ -10,6 +10,7 @@ const MessageForm = () => {
   const [messages, setMessages] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+
   useEffect(() => {
     const fetchMessages = async () => {
       try {
@@ -22,6 +23,7 @@ const MessageForm = () => {
     };
     fetchMessages();
   }, []);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const tempId = uuidv4();

@@ -3,7 +3,6 @@ const http = require("http");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const socketIo = require("socket.io");
 
 dotenv.config();
 
@@ -33,29 +32,6 @@ const messageSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 const Message = mongoose.model("Message", messageSchema);
-
-const server = http.createServer(app);
-const io = socketIo(server, { cors: corsOptions });
-
-// Socket.IOイベント
-io.on("connection", (socket) => {
-  console.log("A user connected");
-
-  // メッセージ送信イベント
-  socket.on("newMessage", async (message) => {
-    try {
-      const newMessage = new Message(message);
-      const savedMessage = await newMessage.save();
-      io.emit("messageAdded", savedMessage); // 新しいメッセージを全クライアントに通知
-    } catch (error) {
-      console.error("Error saving message:", error);
-    }
-  });
-
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
-  });
-});
 
 // メッセージAPIエンドポイント: メッセージを保存
 app.post("/api/messages", async (req, res) => {
@@ -101,6 +77,7 @@ app.delete("/api/messages/:id", async (req, res) => {
 });
 
 // サーバー起動
+const server = http.createServer(app);
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
