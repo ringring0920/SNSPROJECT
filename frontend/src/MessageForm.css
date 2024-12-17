@@ -43,6 +43,8 @@ input[type="text"]::placeholder {
 
 /*モーダル操作部分*/
 .modal-header {
+  border: 5px solid #000000; /*縁の色*/ 
+  border-radius: 2px; 
   background-color: #ff0000; 
   border-bottom: 6px solid #000000; 
 }
