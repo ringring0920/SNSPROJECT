@@ -118,7 +118,7 @@ const MessageForm = () => {
           <Nav.Link href="#features">機能</Nav.Link>
           <Nav.Link href="#contact">お問い合わせ</Nav.Link>
         </Nav>
-        <Form className="d-flex" inline>
+        <Form className="d-flex">
           <FormControl
             type="search"
             placeholder="検索"
