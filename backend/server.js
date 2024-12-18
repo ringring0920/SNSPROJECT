@@ -18,7 +18,7 @@ app.use(express.json()); // 追加: リクエストボディをパースする�
 
 // MongoDB接続
 mongoose
-  .connect("mongodb://localhost:27017/mydb")
+  .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/mydb")
   .then(() => console.log("MongoDB successfully connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
