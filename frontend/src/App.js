@@ -5,14 +5,14 @@ import './App.css';
 
 const App = () => {
 
-  return (
-    <SocketProvider>
-      <div className="container">
-        <h1>INIAD-SNS</h1>
-        <MessageForm />
-      </div>
-    </SocketProvider>
-  );
+return (
+<SocketProvider>
+<div className="container">
+<h1>INIAD-SNS</h1>
+<MessageForm />
+</div>
+</SocketProvider>
+);
 };
 
 export default App;

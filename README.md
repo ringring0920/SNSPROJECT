@@ -7,29 +7,6 @@ npm start
 
 
 memo:
-<App.css>
-
-/*メッセージ枠と送信ボタンの距離*/
-.message-list {
-  margin-top: 30px;
-}
-
-/* メッセージ枠　内部*/
-.message-item {
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 7px solid #fffdfd;
-  border-radius: 27px; /*角の丸み*/
-  background-color: #ffffff;
-  transition: transform 0.3s; 
-}
-
-
-/*メッセージ枠のホバー*/
-.message-item:hover {
-  transform: translateY(-15px); 
-}
-
 
 
 
@@ -37,42 +14,62 @@ memo:
 
 <Messageform.css>
 
-/* 選択されていません */
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #ffffff; 
-  color: #ffffff;
-  transition: background-color 0.3s, color 0.3s;
+
+
+/* フォーム */
+form {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
 }
 
-/* INIAD-SNS */
-h1 {
-  text-align: center;
-  color: #ffffff;
-  margin-top: 20px;
-  font-size: 2.7em;
-  font-weight: bold;
-}
-
-/*内枠*/
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 30px;
-  background-color: #000000; 
+input[type="text"],
+input[type="file"],
+button {
+  padding: 15px;
+  margin: 5px 0;
+  border: 1px solid #ffffff; 
   border-radius: 10px;
-  transition: box-shadow 0.6s;
+  background-color: #070707; 
+  color: #ffffff; 
 }
+
+input[type="text"]::placeholder {
+  color: #ffffff; 
+}
+
+
+/* メッセージリスト */
+.message-list {
+  margin: 10px;
+  max-height: 400px; 
+  overflow-y: auto;
+}
+
+
+
+/* リストスクロール */
+.message-item {
+  border-radius: 5px;
+  padding: 1px;
+  margin: 5px 0;
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+}
+
 
 /*モーダル操作部分*/
 .modal-header {
+  border: 5px solid #000000; /*縁の色*/ 
+  border-radius: 2px; 
   background-color: #ff0000; 
   border-bottom: 6px solid #000000; 
 }
 
 .modal-title {
   font-weight: bold; 
-  font-size: 1.5rem; 
+  font-size: 2rem; 
 }
 
 .modal-body {
@@ -86,7 +83,6 @@ h1 {
 }
 
 .custom-modal .modal-header {
-  border: none; 
   position: relative; 
   padding: 16px; 
 }
@@ -96,12 +92,12 @@ h1 {
 }
 
 .close-button {
-  font-size: 40px; 
-  color: #000;
+  font-size: 50px; 
+  color: #ffffff;
   cursor: pointer; 
   position: absolute; 
   right: 25px; 
-  top: 5px; 
+  top: 2px; 
 }
 
 .modal-footer {
@@ -112,7 +108,7 @@ h1 {
 
 .footer-button {
   flex: 1; 
-  margin: 0 5px;
+  margin: 20 5px;
 }
 
 .footer-button:nth-child(1) {
@@ -121,4 +117,8 @@ h1 {
 
 .footer-button:nth-child(2) {
   align-self: center; 
+}
+
+.alert {
+  margin-bottom: 15px;
 }
