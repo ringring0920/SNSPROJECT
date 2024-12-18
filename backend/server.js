@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL, // 許可するオリジン
+  origin:"*", // 許可するオリジン
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // 許可するHTTPメソッド
 };
 
