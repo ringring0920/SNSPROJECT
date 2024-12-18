@@ -18,7 +18,7 @@ app.use(express.json()); // 追加: リクエストボディをパースする�
 
 // MongoDB接続
 mongoose
-  .connect("mongodb://127.0.0.1:27017/mydb")
+  .connect("mongodb+srv://s1f102202976:9oetVHRyyqMnfCwH@cluster0.mongodb.net/mydb?retryWrites=true&w=majority")
   .then(() => console.log("MongoDB successfully connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
