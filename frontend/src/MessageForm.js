@@ -13,12 +13,15 @@ const MessageForm = () => {
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
+  // APIのベースURLを環境変数から取得
+  const baseURL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
   // メッセージを取得
   useEffect(() => {
     const fetchMessages = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get('/api/messages');
+        const response = await axios.get(`${baseURL}/api/messages`);
         setMessages(response.data);
         setErrorMessage('');
       } catch (error) {
@@ -29,7 +32,7 @@ const MessageForm = () => {
       }
     };
     fetchMessages();
-  }, []);
+  }, [baseURL]);
 
   // フォーム送信処理
   const handleSubmit = async (e) => {
@@ -56,24 +59,24 @@ const MessageForm = () => {
   const postMessage = async (message) => {
     const updatedMessages = [...messages, message];
     setMessages(updatedMessages);
-  
+
     try {
-      const response = await axios.post('/api/messages', {
+      const response = await axios.post(`${baseURL}/api/messages`, {
         text: message.text,
         image: message.image,
       });
-  
+
       console.log("Server Response:", JSON.stringify(response.data, null, 2));
-  
-      setMessages((prevMessages) => 
+
+      setMessages((prevMessages) =>
         prevMessages.map((msg) => (msg._id === message._id ? response.data : msg))
       );
-  
+
       resetForm();
     } catch (error) {
       console.error('Error posting message:', error);
       alert('メッセージ投稿中にエラーが発生しました。');
-  
+
       // エラーが発生した場合は一時的に追加したメッセージを削除
       setMessages(updatedMessages.filter((msg) => msg._id !== message._id));
     }
@@ -88,7 +91,7 @@ const MessageForm = () => {
   // メッセージ削除処理
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/messages/${id}`);
+      await axios.delete(`${baseURL}/api/messages/${id}`);
       setMessages((prevMessages) => prevMessages.filter((msg) => msg._id !== id));
       setShowModal(false);
     } catch (error) {
@@ -106,7 +109,7 @@ const MessageForm = () => {
   return (
     <div>
       {errorMessage && <div className="error-message">{errorMessage}</div>}
-      
+
       <form onSubmit={handleSubmit}>
         <input
           type="text"
