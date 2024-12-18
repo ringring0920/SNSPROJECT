@@ -13,15 +13,13 @@ const MessageForm = () => {
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
-  // APIのベースURLを環境変数から取得
-  const baseURL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
   // メッセージを取得
   useEffect(() => {
     const fetchMessages = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${baseURL}/api/messages`);
+        const response = await axios.get("https://snsproject-920e79757d01.herokuapp.com/api/messages");
         setMessages(response.data);
         setErrorMessage('');
       } catch (error) {
@@ -61,7 +59,7 @@ const MessageForm = () => {
     setMessages(updatedMessages);
 
     try {
-      const response = await axios.post(`${baseURL}/api/messages`, {
+      const response = await axios.post("https://snsproject-920e79757d01.herokuapp.com/api/messages", {
         text: message.text,
         image: message.image,
       });
@@ -91,7 +89,7 @@ const MessageForm = () => {
   // メッセージ削除処理
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${baseURL}/api/messages/${id}`);
+      await axios.delete(`https://snsproject-920e79757d01.herokuapp.com/api/messages${id}`);
       setMessages((prevMessages) => prevMessages.filter((msg) => msg._id !== id));
       setShowModal(false);
     } catch (error) {
