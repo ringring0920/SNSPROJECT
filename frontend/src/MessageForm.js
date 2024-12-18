@@ -30,7 +30,7 @@ const MessageForm = () => {
       }
     };
     fetchMessages();
-  }, [baseURL]);
+  }, []);
 
   // フォーム送信処理
   const handleSubmit = async (e) => {
