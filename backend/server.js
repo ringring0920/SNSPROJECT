@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const corsOptions = {
-  origin: "http://localhost:3000", // 許可するオリジン
+  origin: process.env.FRONTEND_URL || "http://localhost:3000", // 許可するオリジン
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // 許可するHTTPメソッド
 };
 
@@ -18,7 +18,7 @@ app.use(express.json()); // 追加: リクエストボディをパースする�
 
 // MongoDB接続
 mongoose
-  .connect("mongodb+srv://s1f102202976:9oetVHRyyqMnfCwH@cluster0.mongodb.net/mydb?retryWrites=true&w=majority")
+  .connect("mongodb://localhost:27017/mydb")
   .then(() => console.log("MongoDB successfully connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
@@ -50,7 +50,7 @@ app.post("/api/messages", async (req, res) => {
 });
 
 // メッセージを取得（最新順）
-app.get("/api/messages", async (req, res) => {
+app.get("/api/messages", async (res) => {
   try {
     const messages = await Message.find().sort({ createdAt: -1 }); // 最新順
     res.status(200).json(messages);
