@@ -18,7 +18,7 @@ const MessageForm = () => {
     const fetchMessages = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get('http://snsproject.herokuapp.com/api/messages');
+        const response = await axios.get('http://snsproject-920e79757d01.herokuapp.com/api/messages');
         setMessages(response.data);
         setErrorMessage('');
       } catch (error) {
@@ -58,7 +58,7 @@ const MessageForm = () => {
     setMessages(updatedMessages);
   
     try {
-      const response = await axios.post('http://snsproject.herokuapp.com/api/messages', {
+      const response = await axios.post('http://snsproject-920e79757d01.herokuapp.com/api/messages', {
         text: message.text,
         image: message.image,
       });
@@ -88,7 +88,7 @@ const MessageForm = () => {
   // メッセージ削除処理
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://snsproject.herokuapp.com/api/messages/${id}`);
+      await axios.delete(`http://snsproject-920e79757d01.herokuapp.com/api/messages/${id}`);
       setMessages((prevMessages) => prevMessages.filter((msg) => msg._id !== id));
       setShowModal(false);
     } catch (error) {
