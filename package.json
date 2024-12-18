@@ -22,6 +22,7 @@
   "homepage": "https://github.com/ringring0920/SNSPROJECT#readme",
   "dependencies": {
     "axios": "^1.7.9",
+    "bootstrap": "^5.3.3",
     "concurrently": "^7.0.0",
     "cors": "^2.8.5",
     "react-bootstrap": "^2.10.7",
