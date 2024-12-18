@@ -80,7 +80,7 @@ const MessageForm = () => {
     
     setTimeout(() => {
       setNotifications((prev) => prev.filter(notification => notification.id !== id));
-    }, 2000);
+    }, 2500);
   };
   
   const resetForm = () => {
