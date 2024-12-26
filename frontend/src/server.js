@@ -1,22 +1,17 @@
 const express = require('express');
-const http = require('http'); 
+const http = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
 const server = http.createServer(app);
+const io = new Server(server);
 
-// JSONのリクエストボディを解析するミドルウェアを追加
-app.use(express.json());
-
-// 基本的なGETリクエストのハンドラーを追加
-app.get('/', (req, res) => {
-  res.send('Welcome to the Express server without Socket.IO!');
-});
-
-// メッセージを送信するためのPOSTリクエストのハンドラーを追加
-app.post('/api/messages', (req, res) => {
-  const { message } = req.body;
-  console.log('Received message:', message);
-  res.status(200).json({ status: 'success', message: 'Message received' });
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  
+  socket.on('send_message', (msg) => {
+    io.emit('receive_message', msg); // すべてのクライアントにメッセージを送信
+  });
 });
 
 // サーバーを指定のポートでリッスン
