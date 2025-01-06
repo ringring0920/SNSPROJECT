@@ -1,3 +1,8 @@
+.header {
+  background-color: rgb(245, 245, 245); 
+}
+
+
 
 /*背景*/
 body {
@@ -45,5 +50,13 @@ h1.container {
 /*メッセージ枠のホバー*/
 .message-item:hover {
   transform: translateY(-13px); 
+}
+
+.navbar {
+  background-color: #f5f5f5;
+}
+
+form{
+  background-color: #f5f5f5;
 }
 
