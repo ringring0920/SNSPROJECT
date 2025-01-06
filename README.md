@@ -6,119 +6,16 @@ cd frontend
 npm start
 
 
-memo:
+python3 -m venv venv
+source venv/bin/activate
 
+python3 manage.py runserver
 
+<admin>
+id:admin
+mail:admin@example.com
+pass:password1230
 
-
-
-<Messageform.css>
-
-
-
-/* フォーム */
-form {
-  display: flex;
-  flex-direction: column;
-  margin: 20px;
-}
-
-input[type="text"],
-input[type="file"],
-button {
-  padding: 15px;
-  margin: 5px 0;
-  border: 1px solid #ffffff; 
-  border-radius: 10px;
-  background-color: #070707; 
-  color: #ffffff; 
-}
-
-input[type="text"]::placeholder {
-  color: #ffffff; 
-}
-
-
-/* メッセージリスト */
-.message-list {
-  margin: 10px;
-  max-height: 400px; 
-  overflow-y: auto;
-}
-
-
-
-/* リストスクロール */
-.message-item {
-  border-radius: 5px;
-  padding: 1px;
-  margin: 5px 0;
-  display: flex;
-  justify-content: space-between; 
-  align-items: center;
-}
-
-
-/*モーダル操作部分*/
-.modal-header {
-  border: 5px solid #000000; /*縁の色*/ 
-  border-radius: 2px; 
-  background-color: #ff0000; 
-  border-bottom: 6px solid #000000; 
-}
-
-.modal-title {
-  font-weight: bold; 
-  font-size: 2rem; 
-}
-
-.modal-body {
-  font-size: 20px; 
-  font-weight: bold; 
-  color: #000000;
-}
-
-.modal-footer {
-  justify-content: flex-end; 
-}
-
-.custom-modal .modal-header {
-  position: relative; 
-  padding: 16px; 
-}
-
-.custom-modal .modal-title {
-  margin-left: 10px; 
-}
-
-.close-button {
-  font-size: 50px; 
-  color: #ffffff;
-  cursor: pointer; 
-  position: absolute; 
-  right: 25px; 
-  top: 2px; 
-}
-
-.modal-footer {
-  display: flex; 
-  justify-content: space-between; 
-  width: 100%; 
-}
-
-.footer-button {
-  flex: 1; 
-  margin: 20 5px;
-}
-
-.footer-button:nth-child(1) {
-  align-self: center; 
-}
-
-.footer-button:nth-child(2) {
-  align-self: center; 
-}
-
-.alert {
-  margin-bottom: 15px;
-}
+<user>
+id:user
+pass:password1230
