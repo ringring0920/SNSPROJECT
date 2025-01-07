@@ -12,12 +12,16 @@ const MessageForm = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [notifications, setNotifications] = useState([]);
+
+
 
   useEffect(() => {
     const fetchMessages = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get("https://snsproject-920e79757d01.herokuapp.com/api/messages");
+        const response = await axios.get('http://localhost:5000/api/messages');
         setMessages(response.data);
         setErrorMessage('');
       } catch (error) {
@@ -52,30 +56,31 @@ const MessageForm = () => {
   
 
   const postMessage = async (message) => {
-    const updatedMessages = [...messages, message];
-    setMessages(updatedMessages);
-  
+    setIsLoading(true); 
     try {
-      const response = await axios.post("https://snsproject-920e79757d01.herokuapp.com/api/messages", {
+      const response = await axios.post('http://localhost:5000/api/messages', {
         text: message.text,
         image: message.image,
       });
-  
       console.log("Server Response:", JSON.stringify(response.data, null, 2));
-  
-      setMessages((prevMessages) => 
-        prevMessages.map((msg) => (msg._id === message._id ? response.data : msg))
-      );
-  
+      setMessages((prevMessages) => [response.data, ...prevMessages]);
       resetForm();
       addNotification('新しいメッセージが追加されました！');
     } catch (error) {
       console.error('Error posting message:', error);
-      alert('メッセージ投稿中にエラーが発生しました。');
-  
-      // エラーが発生した場合は一時的に追加したメッセージを削除
-      setMessages(updatedMessages.filter((msg) => msg._id !== message._id));
+      setErrorMessage('メッセージ投稿中にエラーが発生しました。');
+    } finally {
+      setIsLoading(false); 
     }
+  };
+  
+  const addNotification = (message) => {
+    const id = uuidv4();
+    setNotifications((prev) => [...prev, { id, message }]);
+    
+    setTimeout(() => {
+      setNotifications((prev) => prev.filter(notification => notification.id !== id));
+    }, 2500);
   };
   
   const resetForm = () => {
@@ -86,7 +91,7 @@ const MessageForm = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://snsproject-920e79757d01.herokuapp.com/api/messages${id}`);
+      await axios.delete(`http://localhost:5000/api/messages/${id}`);
       setMessages((prevMessages) => prevMessages.filter((msg) => msg._id !== id));
       setShowModal(false);
       addNotification('メッセージが削除されました');
@@ -106,8 +111,25 @@ const MessageForm = () => {
   );
   return (
     <div>
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      
+      <Navbar className="custom-navbar" bg="primary" expand="lg">
+      <Navbar.Brand href="#home"></Navbar.Brand>
+      <Nav className="me-auto">
+          <Nav.Link href="#home">ホーム</Nav.Link>
+          <Nav.Link href="#features">機能</Nav.Link>
+          <Nav.Link href="#contact">お問い合わせ</Nav.Link>
+        </Nav>
+        <Form className="d-flex">
+          <FormControl
+            type="search"
+            placeholder="検索"
+            className="me-2"
+            aria-label="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </Form>
+      </Navbar>
+      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"

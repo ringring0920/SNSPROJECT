@@ -13,11 +13,11 @@ body {
 
 /*送信された文字*/
 .container {
-  color: #ffffff;
-  padding: 10px; 
+  color: #69b0cc;
+  padding: 20px; 
   max-width: 800px; 
   margin: 0 auto; 
-  background-color: rgb(20, 19, 19);
+  background-color: rgb(245, 245, 245);
 }
 
 

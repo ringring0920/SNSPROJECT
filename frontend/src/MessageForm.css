@@ -24,7 +24,7 @@ input[type="text"]::placeholder {
 
 input[type="file"],
 button {
-  padding: 6.5px;
+  padding: 6px;
   margin: 5px 0;
   border: 1px solid #ffffff; 
   border-radius: 10px;
