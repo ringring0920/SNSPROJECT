@@ -4,87 +4,85 @@
 
 
 
-/*背景*/
+/* 背景 */
 body {
-  margin: 0; 
+  margin: 0; /* 余白をなくす */
   font-family: Arial, sans-serif; 
-  background-color: #ffffff; 
+  background-color: #fff8f8; /* 背景色を統一 */
+  min-height: 100vh; /* ビューポート全体の高さを確保 */
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px; /* 背景の淵を丸くする */
+  overflow: hidden; /* 丸みを適用する際に不要な部分がはみ出さないように */
 }
 
-/*送信された文字*/
+/* h1.containerのスタイル */
+h1.container {
+  font-family: sans-serif;
+  text-align: center;
+  color: #6193bd;
+  margin: 0; /* 外側の余白をなくす */
+  padding: 20px; /* 内側の余白を調整 */
+  background-color: transparent; /* 背景色を透明に */
+}
+
+/* 送信された文字 */
 .container {
   color: #69b0cc;
   padding: 20px; 
   max-width: 800px; 
   margin: 0 auto; 
   background-color: rgb(245, 245, 245);
+  flex: 1; /* コンテンツ部分が余白を埋める */
+  border-radius: 15px; /* コンテナの淵を丸くする */
 }
 
 
-/*INIAD-SNS*/
-h1.container {
-  font-family:sans-serif;
-  text-align: center; 
-  color: #6193bd; 
-  background-color: #fff8f8;
-  margin-bottom: 20px; 
-}
-
-
-/*メッセージ枠と送信ボタンの距離*/
+/* メッセージ枠と送信ボタンの距離 */
 .message-list {
   margin-top: 30px;
 }
 
-/* メッセージ枠　内部*/
+/* メッセージ枠内部 */
 .message-item {
   margin-bottom: 10px;
   padding: 20px;
-  border: 5px solid #ffffff; /*縁の色*/ 
+  border: 5px solid #ffffff; /* 縁の色 */ 
   border-radius: 25px; 
-  background-color: #f5f5f5;/*テキスト背景*/
+  background-color: #f5f5f5; /* テキスト背景 */
   transition: transform 0.3s; 
 }
 
-
-/*メッセージ枠のホバー*/
+/* メッセージ枠のホバー */
 .message-item:hover {
   transform: translateY(-13px); 
 }
 
+/* ナビゲーションバー */
 .navbar {
   background-color: #f5f5f5;
 }
 
-form{
+form {
   background-color: #f5f5f5;
 }
 
 .custom-navbar.navbar {
-  background-color:  #72a1c7 !important;
+  background-color: #72a1c7 !important;
 }
 
-.alart-danger{
- background-color: rgb(202, 163, 163);
+.alart-danger {
+  background-color: rgb(202, 163, 163);
 }
 
-.form-control.mb-2{
+.form-control.mb-2 {
   color: #010101;
   background-color: #ffffff;
 }
 
-input[type="text"]::-webkit-input-placeholder {
-  color: #010000;
-}
-
-input[type="text"]::-moz-placeholder {
-  color: #010000;
-}
-
-input[type="text"]:-ms-input-placeholder {
-  color: #010000;
-}
-
-input[type="text"]::placeholder {
-  color: #010000;
+/* プレースホルダー文字のスタイル */
+input[type="text"]::placeholder,
+textarea::placeholder {
+  color: #ffffff; /* プレースホルダー文字を白く */
+  opacity: 1; /* プレースホルダーの透明度を100%に */
 }
