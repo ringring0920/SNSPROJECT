@@ -1,16 +1,35 @@
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import './MessageForm.css';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Navbar, Nav, Form, FormControl } from 'react-bootstrap';
 const MessageForm = () => {
   const [text, setText] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [notification, setNotification] = useState('');
+  const [notificationVisible, setNotificationVisible] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [showBulkDeleteConfirmModal, setShowBulkDeleteConfirmModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showFeatureModal, setShowFeatureModal] = useState(false);
+  const [selectedMessages, setSelectedMessages] = useState({});
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingMessage, setEditingMessage] = useState(null);
+
+  const fetchMessages = () => {
+    setIsLoading(true);
+    const dummyMessages = [
+      { _id: uuidv4(), text: 'ようこそ！', image: null },
+      { _id: uuidv4(), text: 'INIAD SNSへ！', image: null },
+    ];
+    setMessages(dummyMessages);
+    setIsLoading(false);
+  };
   const [searchTerm, setSearchTerm] = useState('');
   const [notifications, setNotifications] = useState([]);
   useEffect(() => {
@@ -29,6 +48,7 @@ const MessageForm = () => {
     };
     fetchMessages();
   }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!text.trim() && !imageFile) {
@@ -97,6 +117,7 @@ const MessageForm = () => {
       setErrorMessage(`メッセージ削除中にエラーが発生しました: ${error.response ? error.response.data.message : error.message}`);
     }
   };
+  
   const openModal = (id) => {
     setDeleteId(id);
     setShowModal(true);
@@ -158,11 +179,7 @@ const MessageForm = () => {
           <Button variant="secondary" onClick={() => setShowModal(false)} className="footer-button">
             キャンセル
           </Button>
-          <Button
-            variant="danger"
-            onClick={() => handleDelete(deleteId)}
-            className="footer-button"
-          >
+          <Button variant="danger" onClick={() => handleDelete(deleteId)} className="footer-button">
             削除
           </Button>
         </Modal.Footer>
