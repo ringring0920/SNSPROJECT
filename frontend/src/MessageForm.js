@@ -62,8 +62,16 @@ const MessageForm = () => {
         text: message.text,
         image: message.image,
       });
+  
+      const savedMessage = response.data.savedMessage;
+      const isCensored = response.data.isCensored;
+  
+      if (isCensored) {
+        addNotification("メッセージ内の暴言が伏字に変換されました。");
+      }
+  
       console.log("Server Response:", JSON.stringify(response.data, null, 2));
-      setMessages((prevMessages) => [response.data, ...prevMessages]);
+      setMessages((prevMessages) => [savedMessage, ...prevMessages]);
       resetForm();
       addNotification('新しいメッセージが追加されました！');
     } catch (error) {
@@ -73,6 +81,7 @@ const MessageForm = () => {
       setIsLoading(false); 
     }
   };
+  
   
   const addNotification = (message) => {
     const id = uuidv4();
