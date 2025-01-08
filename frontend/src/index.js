@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client'; // 修正: react-dom/client をインポート
 import App from './App'; // Appコンポーネントをインポート
 import reportWebVitals from './reportWebVitals';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 // root要素を取得
 const rootElement = document.getElementById('root');

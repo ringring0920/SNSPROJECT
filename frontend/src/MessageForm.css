@@ -5,10 +5,10 @@ form {
   display: flex;
   flex-direction: column;
   margin: 20px;
+  background-color: #000000; 
 }
 
 input[type="text"],
-input[type="file"],
 button {
   padding: 15px;
   margin: 5px 0;
@@ -22,28 +22,51 @@ input[type="text"]::placeholder {
   color: #ffffff; 
 }
 
-
-/* メッセージリスト */
-.message-list {
-  margin: 10px;
-  max-height: 400px; 
-  overflow-y: auto;
+input[type="file"],
+button {
+  padding: 6px;
+  margin: 5px 0;
+  border: 1px solid #ffffff; 
+  border-radius: 10px;
+  background-color: #070707; 
+  color: #ffffff; 
 }
 
-/* リストスクロール */
-.message-item {
+input[type="file"]::placeholder {
+  color: #ffffff; 
+}
+
+
+.message-list {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
   border-radius: 5px;
-  padding: 1px;
-  margin: 5px 0;
-  display: flex;
-  justify-content: space-between; 
-  align-items: center;
+  padding: 10px;
+}
+
+.message-item {
+  padding: 10px;
+  border-bottom: 1px solid #000000;
+}
+
+.message-item:last-child {
+  border-bottom: none;
+}
+
+.message-text {
+  margin-bottom: 10px; 
+}
+
+.message-image {
+  max-width: 100%; 
+  height: auto; 
 }
 
 
 /*モーダル操作部分*/
 .modal-header {
-  border: 5px solid #000000; /*縁の色*/ 
+  border: 5px solid #ff0000; /*縁の色*/ 
   border-radius: 2px; 
   background-color: #ff0000; 
   border-bottom: 6px solid #000000; 
@@ -79,7 +102,7 @@ input[type="text"]::placeholder {
   cursor: pointer; 
   position: absolute; 
   right: 25px; 
-  top: 2px; 
+  top: -9px; 
 }
 
 .modal-footer {
@@ -100,3 +123,41 @@ input[type="text"]::placeholder {
 .footer-button:nth-child(2) {
   align-self: center; 
 }
+
+.alert {
+  margin-bottom: 15px;
+}
+
+.notifications {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1050; 
+}
+
+
+/*ホーム、機能、問い合わせ画面のスタイル変更*/
+.navbar {
+  color: #000000; 
+}
+
+.navbar-brand, .nav-link {
+  color: rgb(255, 255, 255) !important; 
+  font-size: 50px;
+  font-weight: bold; 
+}
+
+.navbar-brand:hover, .nav-link:hover {
+  color: #000000 !important; 
+}
+
+.navbar .fa {
+  margin-right: 8px; 
+}
+
+.custom-navbar {
+  border: 3px solid #fff; 
+  border-radius: 15px; 
+  box-shadow: none; 
+}
+

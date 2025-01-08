@@ -1,25 +1,32 @@
+.header {
+  background-color: rgb(245, 245, 245); 
+}
+
+
 
 /*背景*/
 body {
   margin: 0; 
   font-family: Arial, sans-serif; 
-  background-color: #252525; 
+  background-color: #ffffff; 
 }
 
 /*送信された文字*/
 .container {
-  color: #ffffff;
+  color: #69b0cc;
   padding: 20px; 
   max-width: 800px; 
   margin: 0 auto; 
+  background-color: rgb(245, 245, 245);
 }
 
 
 /*INIAD-SNS*/
-h1 {
+h1.container {
   font-family:sans-serif;
   text-align: center; 
-  color: #ffffff; 
+  color: #6193bd; 
+  background-color: #fff8f8;
   margin-bottom: 20px; 
 }
 
@@ -33,9 +40,9 @@ h1 {
 .message-item {
   margin-bottom: 10px;
   padding: 20px;
-  border: 5px solid #d3d0d0; /*縁の色*/ 
+  border: 5px solid #ffffff; /*縁の色*/ 
   border-radius: 25px; 
-  background-color: #5f5f5f;/*テキスト背景*/
+  background-color: #f5f5f5;/*テキスト背景*/
   transition: transform 0.3s; 
 }
 
@@ -43,4 +50,41 @@ h1 {
 /*メッセージ枠のホバー*/
 .message-item:hover {
   transform: translateY(-13px); 
+}
+
+.navbar {
+  background-color: #f5f5f5;
+}
+
+form{
+  background-color: #f5f5f5;
+}
+
+.custom-navbar.navbar {
+  background-color:  #72a1c7 !important;
+}
+
+.alart-danger{
+ background-color: rgb(202, 163, 163);
+}
+
+.form-control.mb-2{
+  color: #010101;
+  background-color: #ffffff;
+}
+
+input[type="text"]::-webkit-input-placeholder {
+  color: #010000;
+}
+
+input[type="text"]::-moz-placeholder {
+  color: #010000;
+}
+
+input[type="text"]:-ms-input-placeholder {
+  color: #010000;
+}
+
+input[type="text"]::placeholder {
+  color: #010000;
 }
