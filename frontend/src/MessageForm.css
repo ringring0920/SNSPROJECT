@@ -161,3 +161,56 @@ input[type="file"]::placeholder {
   box-shadow: none; 
 }
 
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: rgba(255, 165, 0, 0.8); /* 半透明のオレンジ */
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000; /* 他の要素の前に表示 */
+  transition: opacity 0.5s ease;
+  font-size: 20px;
+}
+
+.custom-checkbox {
+  width: 20px; /* チェックボックスの幅 */
+  height: 17px; /* チェックボックスの高さ */
+}
+
+.message-actions {
+  display: flex;
+  align-items: center;
+}
+
+/* MessageForm.css */
+
+/* モーダルの基本スタイル */
+.modal-title {
+  font-size: 1.5rem;
+}
+
+
+/* メッセージリストのスタイル */
+.message-item {
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #ffffff;
+}
+
+.message-actions {
+  display: flex;
+  align-items: center;
+}
+
+.custom-checkbox {
+  margin-right: 10px;
+}
+
+/* 画像のスタイル */
+.message-image {
+  max-width: 100px;
+  margin-left: 10px;
+}

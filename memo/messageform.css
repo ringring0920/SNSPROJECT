@@ -1,0 +1,134 @@
+/* 全体のスタイル */
+body {
+    background-color: #ffffff; /* 薄い水色の背景 */
+    font-family: 'Arial', sans-serif;
+    color: #ffffff;
+  }
+  
+  /* コンテナのスタイル */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 0px rgb(0, 0, 0);
+    background-color: #ffffff; /* 白い背景 */
+  }
+  /* ナビゲーションバーのスタイル */
+  .custom-navbar {
+    border-radius: 8px;
+    display: flex; /* フレックスボックスを使用 */
+    justify-content: space-between; /* スペースを均等に配置 */
+  }
+  
+  .custom-navbar .navbar-brand,
+  .custom-navbar .nav-link {
+    color: #007bff; /* 水色 */
+  }
+  
+  .custom-navbar .nav-link:hover {
+    color: #0056b3; /* 濃い水色 */
+  }
+  
+  /* フォームのスタイル */
+  .form-control {
+    border-radius: 5px;
+    border: 1px solid #007bff; /* 水色のボーダー */
+    background-color: #ffffff; /* 白い背景 */
+    color: #000; /* 入力した文字を黒に */
+  }
+  
+  .form-control:focus {
+    border-color: #0056b3; /* 濃い水色 */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  /* ボタンのスタイル */
+  .btn-primary {
+    background-color: #007bff; /* 水色 */
+    border-color: #007bff;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3; /* 濃い水色 */
+    border-color: #0056b3;
+  }
+  
+  .btn-danger {
+    background-color: #dc3545; /* 赤 */
+    border-color: #dc3545;
+  }
+  
+  .btn-danger:hover {
+    background-color: #c82333; /* 濃い赤 */
+    border-color: #bd2130;
+  }
+  
+  /* メッセージリストのスタイル */
+  .message-list {
+    margin-top: 20px;
+  }
+  
+  .message-item {
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background-color: #ffffff; /* 白い背景 */
+    margin-bottom: 10px;
+    transition: box-shadow 0.3s;
+  }
+  
+  .message-item:hover {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); /* ホバー時の影 */
+  }
+  
+  /* モーダルのスタイル */
+  .modal-header {
+    background-color: #ff0000; /* 水色 */
+    color: white;
+  }
+  
+  .modal-footer {
+    border-top: none; /* フッターのボーダーを削除 */
+  }
+  
+  .close-button {
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
+  .notifications {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+  
+  .alert {
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+    /* ナビゲーションバー全体のスタイル */
+    .custom-navbar {
+      padding: 0.3rem 0.8rem; /* パディングを小さく */
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      min-height: 50px; /* 高さを固定 */
+    }
+    
+    /* ナビゲーションリンク（ホーム、機能、お問い合わせ）のスタイル */
+    .nav-link {
+      color: white !important;
+      margin: 1.7px; /* マージンを小さく */
+      padding: 0.3rem 0.5rem !important; /* パディングを小さく */
+      font-size: 10px; /* フォントサイズを小さく */
+    }
+    
+    /* 検索フォームのスタイル */
+    .form-control {
+      min-width: 180px; /* 幅を小さく */
+      height: 32px; /* 高さを小さく */
+      font-size: 0.9rem; /* フォントサイズを小さく */
+      padding: 0.25rem 0.8rem;
+    }
+    
