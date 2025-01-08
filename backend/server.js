@@ -2,21 +2,24 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const axios = require("axios");
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// APIキーの確認
+console.log("API Key:", process.env.OPENAI_API_KEY);
+
 const corsOptions = {
-  origin: "http://localhost:3000", // 許可するオリジン
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // 許可するHTTPメソッド
+  origin: "http://localhost:3000",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 
 app.use(cors(corsOptions));
-app.use(express.json()); // リクエストボディをパースするミドルウェア
+app.use(express.json());
 
-// MongoDB接続
 mongoose
   .connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/mydb", {
     useNewUrlParser: true,
@@ -25,7 +28,6 @@ mongoose
   .then(() => console.log("MongoDB successfully connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// メッセージスキーマとモデル
 const messageSchema = new mongoose.Schema({
   text: String,
   image: String,
@@ -33,21 +35,43 @@ const messageSchema = new mongoose.Schema({
 });
 const Message = mongoose.model("Message", messageSchema);
 
-//暴言検知用リスト
-const badWords = ['死ね', '殺す', 'dead']; // 実際の暴言単語を追加
+const badWords = ['死ね', '殺す', 'dead'];
 
-// 伏字にする
-// 暴言を伏字に変換する関数
 function censorBadWords(text) {
   let censoredText = text;
   badWords.forEach((word) => {
-    const regex = new RegExp(word, 'gi'); // 大文字小文字を区別しない
-    censoredText = censoredText.replace(regex, '****'); // 伏字に変換
+    const regex = new RegExp(word, 'gi');
+    censoredText = censoredText.replace(regex, '****');
   });
   return censoredText;
 }
 
-// 新しいメッセージを投稿
+// ChatGPT APIを呼び出す関数
+async function analyzeMessage(text) {
+  try {
+    const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+      model: "gpt-4", // または使用したいモデルを設定
+      messages: [
+        {
+          role: "user",
+          content: `以下の文に含まれる不適切な表現を指摘してください: "${text}"`
+        }
+      ],
+      max_tokens: 50,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    return response.data.choices[0].text.trim();
+  } catch (error) {
+    console.error("ChatGPT API エラー:", error);
+    return null;
+  }
+}
+
 app.post("/api/messages", async (req, res) => {
   try {
     const { text, image } = req.body;
@@ -56,21 +80,22 @@ app.post("/api/messages", async (req, res) => {
       return res.status(400).json({ message: "メッセージが必要です。" });
     }
 
-    const censoredText = censorBadWords(text); // 暴言を伏字に変換
+    const censoredText = censorBadWords(text);
+    const inappropriateFeedback = await analyzeMessage(text);
 
     const newMessage = new Message({
-      text: censoredText, // 伏字に変換されたテキスト
+      text: censoredText,
       image: image || null,
     });
 
     const savedMessage = await newMessage.save();
     
-    // 伏字に変換されたかどうかをフロントに通知
     const isCensored = censoredText !== text;
 
     res.status(201).json({
       savedMessage,
-      isCensored, // 伏字が変換された場合は true
+      isCensored,
+      inappropriateFeedback // 指摘された不適切な表現を返す
     });
   } catch (error) {
     console.error("Error saving message:", error);
@@ -78,10 +103,9 @@ app.post("/api/messages", async (req, res) => {
   }
 });
 
-// メッセージを取得（最新順）
 app.get("/api/messages", async (req, res) => {
   try {
-    const messages = await Message.find().sort({ createdAt: -1 }); // 最新順
+    const messages = await Message.find().sort({ createdAt: -1 });
     res.status(200).json(messages);
   } catch (error) {
     console.error("Error fetching messages:", error);
@@ -89,7 +113,6 @@ app.get("/api/messages", async (req, res) => {
   }
 });
 
-// メッセージを削除
 app.delete("/api/messages/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -105,7 +128,6 @@ app.delete("/api/messages/:id", async (req, res) => {
   }
 });
 
-// サーバー起動
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

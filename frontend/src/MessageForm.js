@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import './MessageForm.css';
-import { Modal, Button, Navbar, Nav, Form, FormControl } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 const MessageForm = () => {
   const [text, setText] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -14,9 +13,6 @@ const MessageForm = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [notifications, setNotifications] = useState([]);
-
-
-
   useEffect(() => {
     const fetchMessages = async () => {
       setIsLoading(true);
@@ -33,7 +29,6 @@ const MessageForm = () => {
     };
     fetchMessages();
   }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!text.trim() && !imageFile) {
@@ -53,23 +48,22 @@ const MessageForm = () => {
       postMessage({ text, image: null, _id: tempId });
     }
   };
-  
-
   const postMessage = async (message) => {
-    setIsLoading(true); 
+    setIsLoading(true);
     try {
       const response = await axios.post('http://localhost:5000/api/messages', {
         text: message.text,
         image: message.image,
       });
-  
       const savedMessage = response.data.savedMessage;
       const isCensored = response.data.isCensored;
-  
+      const inappropriateFeedback = response.data.inappropriateFeedback;
       if (isCensored) {
         addNotification("メッセージ内の暴言が伏字に変換されました。");
       }
-  
+      if (inappropriateFeedback) {
+        addNotification(`不適切な表現: ${inappropriateFeedback}`);
+      }
       console.log("Server Response:", JSON.stringify(response.data, null, 2));
       setMessages((prevMessages) => [savedMessage, ...prevMessages]);
       resetForm();
@@ -78,26 +72,20 @@ const MessageForm = () => {
       console.error('Error posting message:', error);
       setErrorMessage('メッセージ投稿中にエラーが発生しました。');
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
-  
-  
   const addNotification = (message) => {
     const id = uuidv4();
     setNotifications((prev) => [...prev, { id, message }]);
-    
     setTimeout(() => {
       setNotifications((prev) => prev.filter(notification => notification.id !== id));
     }, 2500);
   };
-  
   const resetForm = () => {
     setText('');
     setImageFile(null);
   };
-  
-
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/messages/${id}`);
@@ -109,20 +97,18 @@ const MessageForm = () => {
       setErrorMessage(`メッセージ削除中にエラーが発生しました: ${error.response ? error.response.data.message : error.message}`);
     }
   };
-  
   const openModal = (id) => {
     setDeleteId(id);
     setShowModal(true);
   };
-  
   const filteredMessages = messages.filter(msg =>
     msg.text.toLowerCase().includes(searchTerm.toLowerCase())
   );
   return (
     <div>
-
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-      <form onSubmit={handleSubmit}>
+16:33
+<form onSubmit={handleSubmit}>
         <input
           type="text"
           value={text}
@@ -142,7 +128,7 @@ const MessageForm = () => {
           <div className="spinner-border" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
-          <p>読み込み中...</p> {}
+          <p>読み込み中...</p>
         </div>
       ) : (
         <div className="message-list mt-3">
@@ -157,7 +143,6 @@ const MessageForm = () => {
           ))}
         </div>
       )}
-      {}
       <div className="notifications">
         {notifications.map(note => (
           <div key={note.id} className="alert alert-info">{note.message}</div>
@@ -173,7 +158,11 @@ const MessageForm = () => {
           <Button variant="secondary" onClick={() => setShowModal(false)} className="footer-button">
             キャンセル
           </Button>
-          <Button variant="danger" onClick={() => handleDelete(deleteId)} className="footer-button">
+          <Button
+            variant="danger"
+            onClick={() => handleDelete(deleteId)}
+            className="footer-button"
+          >
             削除
           </Button>
         </Modal.Footer>
