@@ -17,8 +17,7 @@ app.use(cors(corsOptions));
 app.use(express.json()); // 追加: リクエストボディをパースするミドルウェア
 
 // MongoDB接続
-mongoose
-  .connect("mongodb+srv://s1f102202976:9oetVHRyyqMnfCwH@cluster0.y6kft.mongodb.net/")
+mongoose.connect("mongodb://127.0.0.1:27017/mydb")
   .then(() => console.log("MongoDB successfully connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
@@ -50,7 +49,7 @@ app.post("/api/messages", async (req, res) => {
 });
 
 // メッセージを取得（最新順）
-app.get("/api/messages", async (res) => {
+app.get("/api/messages", async (req, res) => {
   try {
     const messages = await Message.find().sort({ createdAt: -1 }); // 最新順
     res.status(200).json(messages);
