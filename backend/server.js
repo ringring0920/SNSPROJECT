@@ -49,7 +49,7 @@ function censorBadWords(text) {
 // ChatGPT APIを呼び出す関数
 async function analyzeMessage(text) {
   try {
-    const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+    const response = await axios.post('https://api.openai.iniad.org/api/v1/chat/completions', {
       model: "gpt-4", // または使用したいモデルを設定
       messages: [
         {
@@ -65,7 +65,8 @@ async function analyzeMessage(text) {
       }
     });
 
-    return response.data.choices[0].text.trim();
+    console.log(response.data.choices[0].message.content);
+    return response.data.choices[0].message.content;
   } catch (error) {
     console.error("ChatGPT API エラー:", error);
     return null;

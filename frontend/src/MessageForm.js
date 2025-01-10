@@ -107,7 +107,6 @@ const MessageForm = () => {
   return (
     <div>
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-16:33
 <form onSubmit={handleSubmit}>
         <input
           type="text"
