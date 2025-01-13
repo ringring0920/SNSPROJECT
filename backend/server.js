@@ -35,29 +35,18 @@ const messageSchema = new mongoose.Schema({
 });
 const Message = mongoose.model("Message", messageSchema);
 
-const badWords = ['死ね', '殺す', 'dead'];
-
-function censorBadWords(text) {
-  let censoredText = text;
-  badWords.forEach((word) => {
-    const regex = new RegExp(word, 'gi');
-    censoredText = censoredText.replace(regex, '****');
-  });
-  return censoredText;
-}
-
 // ChatGPT APIを呼び出す関数
 async function analyzeMessage(text) {
   try {
     const response = await axios.post('https://api.openai.iniad.org/api/v1/chat/completions', {
-      model: "gpt-4", // または使用したいモデルを設定
+      model: "gpt-4",
       messages: [
         {
           role: "user",
-          content: `以下の文に含まれる不適切な表現を指摘してください: "${text}"`
+          content: `以下の文に不適切な表現が含まれているかどうか、またその内容を指摘してください: "${text}"`
         }
       ],
-      max_tokens: 50,
+      max_tokens: 100,
     }, {
       headers: {
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -65,12 +54,24 @@ async function analyzeMessage(text) {
       }
     });
 
-    console.log(response.data.choices[0].message.content);
-    return response.data.choices[0].message.content;
+    const inappropriateContent = response.data.choices[0].message.content;
+    return inappropriateContent ? inappropriateContent.split(",").map(word => word.trim()) : [];
   } catch (error) {
     console.error("ChatGPT API エラー:", error);
-    return null;
+    return [];
   }
+}
+
+// テキストを伏字にする関数
+function censorText(text, inappropriateWords) {
+  let censoredText = text;
+
+  inappropriateWords.forEach(word => {
+    const regex = new RegExp(word, 'gi'); // 大文字小文字を区別しない
+    censoredText = censoredText.replace(regex, '****');
+  });
+
+  return censoredText;
 }
 
 app.post("/api/messages", async (req, res) => {
@@ -81,8 +82,10 @@ app.post("/api/messages", async (req, res) => {
       return res.status(400).json({ message: "メッセージが必要です。" });
     }
 
-    const censoredText = censorBadWords(text);
-    const inappropriateFeedback = await analyzeMessage(text);
+    const inappropriateWords = await analyzeMessage(text);
+    const isInappropriate = inappropriateWords.length > 0;
+
+    const censoredText = isInappropriate ? censorText(text, inappropriateWords) : text;
 
     const newMessage = new Message({
       text: censoredText,
@@ -90,13 +93,12 @@ app.post("/api/messages", async (req, res) => {
     });
 
     const savedMessage = await newMessage.save();
-    
-    const isCensored = censoredText !== text;
+
+    const feedbackMessage = isInappropriate ? `注意: 不適切な表現が含まれていました。` : null;
 
     res.status(201).json({
       savedMessage,
-      isCensored,
-      inappropriateFeedback // 指摘された不適切な表現を返す
+      feedbackMessage // 注意メッセージを返す
     });
   } catch (error) {
     console.error("Error saving message:", error);

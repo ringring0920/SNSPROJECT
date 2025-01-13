@@ -134,33 +134,6 @@ input[type="file"]::placeholder {
   right: 20px;
   z-index: 1050; 
 }
-
-
-/*ホーム、機能、問い合わせ画面のスタイル変更*/
-.navbar {
-  color: #000000; 
-}
-
-.navbar-brand, .nav-link {
-  color: rgb(255, 255, 255) !important; 
-  font-size: 50px;
-  font-weight: bold; 
-}
-
-.navbar-brand:hover, .nav-link:hover {
-  color: #000000 !important; 
-}
-
-.navbar .fa {
-  margin-right: 8px; 
-}
-
-.custom-navbar {
-  border: 3px solid #fff; 
-  border-radius: 15px; 
-  box-shadow: none; 
-}
-
 .notification {
   position: fixed;
   top: 20px;
@@ -169,48 +142,48 @@ input[type="file"]::placeholder {
   color: white;
   padding: 10px;
   border-radius: 5px;
-  z-index: 1000; /* 他の要素の前に表示 */
+  z-index: 1000; 
   transition: opacity 0.5s ease;
   font-size: 20px;
 }
 
-.custom-checkbox {
-  width: 20px; /* チェックボックスの幅 */
-  height: 17px; /* チェックボックスの高さ */
+.custom-send-button {
+  padding: 10px 20px; 
+  font-size: 16px; 
 }
 
-.message-actions {
-  display: flex;
-  align-items: center;
-}
-
-/* MessageForm.css */
-
-/* モーダルの基本スタイル */
-.modal-title {
-  font-size: 1.5rem;
+.custom-delete-button {
+  padding: 10px 20px; 
+  font-size: 16px;
 }
 
 
-/* メッセージリストのスタイル */
-.message-item {
-  border: 1px solid #dee2e6;
-  border-radius: 5px;
-  padding: 10px;
-  background-color: #ffffff;
+.custom-send-button:hover {
+  background-color: #0056b3; 
 }
 
-.message-actions {
-  display: flex;
-  align-items: center;
+.custom-delete-button:hover {
+  background-color: #c82333; 
 }
 
-.custom-checkbox {
-  margin-right: 10px;
+.custom-delete-button.disabled {
+  opacity: 0.5; 
+  cursor: not-allowed; 
 }
 
-/* 画像のスタイル */
-.message-image {
-  max-width: 100px;
-  margin-left: 10px;
+.custom-button {
+  padding: 12px 20px; 
+  font-size: 16px;
+  border-radius: 5px; 
+  width: 100%; 
+  display: block; 
+}
+
+
+.custom-button:hover {
+  opacity: 0.8; 
+}
+.custom-button.disabled {
+  opacity: 0.5; 
+  cursor: not-allowed; 
 }

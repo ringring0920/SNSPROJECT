@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import './MessageForm.css';
-import { Modal, Button } from 'react-bootstrap';
+import { Button,Modal } from 'react-bootstrap';
+
 const MessageForm = () => {
   const [text, setText] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -11,8 +12,11 @@ const MessageForm = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false); 
+  const [searchTerm, ] = useState('');
   const [notifications, setNotifications] = useState([]);
+  const [selectedMessages, setSelectedMessages] = useState([]);
+
   useEffect(() => {
     const fetchMessages = async () => {
       setIsLoading(true);
@@ -29,6 +33,7 @@ const MessageForm = () => {
     };
     fetchMessages();
   }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!text.trim() && !imageFile) {
@@ -48,6 +53,7 @@ const MessageForm = () => {
       postMessage({ text, image: null, _id: tempId });
     }
   };
+
   const postMessage = async (message) => {
     setIsLoading(true);
     try {
@@ -75,6 +81,7 @@ const MessageForm = () => {
       setIsLoading(false);
     }
   };
+
   const addNotification = (message) => {
     const id = uuidv4();
     setNotifications((prev) => [...prev, { id, message }]);
@@ -82,10 +89,12 @@ const MessageForm = () => {
       setNotifications((prev) => prev.filter(notification => notification.id !== id));
     }, 2500);
   };
+
   const resetForm = () => {
     setText('');
     setImageFile(null);
   };
+
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/messages/${id}`);
@@ -97,17 +106,37 @@ const MessageForm = () => {
       setErrorMessage(`メッセージ削除中にエラーが発生しました: ${error.response ? error.response.data.message : error.message}`);
     }
   };
+
+  const handleBulkDelete = async () => {
+    try {
+      await Promise.all(selectedMessages.map(id => axios.delete(`http://localhost:5000/api/messages/${id}`)));
+      setMessages((prevMessages) => prevMessages.filter((msg) => !selectedMessages.includes(msg._id)));
+      setSelectedMessages([]);
+      addNotification('選択したメッセージが削除されました');
+      setShowBulkDeleteModal(false); // モーダルを閉じる
+    } catch (error) {
+      console.error('Error deleting messages:', error);
+      setErrorMessage('メッセージ削除中にエラーが発生しました。');
+    }
+  };
+
   const openModal = (id) => {
     setDeleteId(id);
     setShowModal(true);
   };
+
+  const openBulkDeleteModal = () => {
+    setShowBulkDeleteModal(true);
+  };
+
   const filteredMessages = messages.filter(msg =>
     msg.text.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
   return (
     <div>
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-<form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={text}
@@ -120,7 +149,15 @@ const MessageForm = () => {
           onChange={(e) => setImageFile(e.target.files[0])}
           className="form-control mb-2"
         />
-        <Button type="submit" className="btn btn-primary">送信</Button>
+        <Button type="submit" className="btn btn-primary custom-button">送信</Button>
+<Button 
+  variant="danger" 
+  onClick={openBulkDeleteModal} 
+  disabled={selectedMessages.length === 0} 
+  className={`btn custom-button ${selectedMessages.length === 0 ? 'disabled' : ''}`}
+>
+  一括削除
+</Button>
       </form>
       {isLoading ? (
         <div className="text-center mt-3">
@@ -132,7 +169,29 @@ const MessageForm = () => {
       ) : (
         <div className="message-list mt-3">
           {filteredMessages.map((msg) => (
-            <div key={msg._id} className="message-item mb-2">
+            <div 
+              key={msg._id} 
+              className="message-item mb-2" 
+              onClick={() => {
+                setSelectedMessages(prev => 
+                  prev.includes(msg._id) 
+                    ? prev.filter(id => id !== msg._id) 
+                    : [...prev, msg._id]
+                );
+              }}
+            >
+              <input 
+                type="checkbox" 
+                checked={selectedMessages.includes(msg._id)} 
+                onChange={(e) => {
+                  e.stopPropagation();
+                  setSelectedMessages(prev => 
+                    prev.includes(msg._id) 
+                      ? prev.filter(id => id !== msg._id) 
+                      : [...prev, msg._id]
+                  );
+                }} 
+              />
               <p className="message-text">{msg.text}</p>
               {msg.image && <img src={msg.image} alt="Uploaded" className="img-fluid message-image mb-2" />}
               <Button variant="danger" onClick={() => openModal(msg._id)}>
@@ -147,6 +206,8 @@ const MessageForm = () => {
           <div key={note.id} className="alert alert-info">{note.message}</div>
         ))}
       </div>
+      
+      {/* 確認モーダル */}
       <Modal show={showModal} onHide={() => setShowModal(false)} className="fade">
         <Modal.Header>
           <span className="close-button" onClick={() => setShowModal(false)}>&times;</span>
@@ -166,7 +227,29 @@ const MessageForm = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* 一括削除確認モーダル */}
+      <Modal show={showBulkDeleteModal} onHide={() => setShowBulkDeleteModal(false)} className="fade">
+        <Modal.Header>
+          <span className="close-button" onClick={() => setShowBulkDeleteModal(false)}>&times;</span>
+          <Modal.Title>一括削除確認</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>選択したメッセージを削除してもよろしいですか？</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowBulkDeleteModal(false)} className="footer-button">
+            キャンセル
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleBulkDelete}
+            className="footer-button custom-bulk-delete-button"
+          >
+            削除
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
+
 export default MessageForm;

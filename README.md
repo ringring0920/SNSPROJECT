@@ -10,115 +10,137 @@ memo:
 
 
 
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const axios = require("axios");
 
+dotenv.config();
 
-<Messageform.css>
+const app = express();
+const PORT = process.env.PORT || 5000;
 
+// APIキーの確認
+console.log("API Key:", process.env.OPENAI_API_KEY);
 
+const corsOptions = {
+  origin: "http://localhost:3000",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+};
 
-/* フォーム */
-form {
-  display: flex;
-  flex-direction: column;
-  margin: 20px;
+app.use(cors(corsOptions));
+app.use(express.json());
+
+mongoose
+  .connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/mydb", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB successfully connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
+const messageSchema = new mongoose.Schema({
+  text: String,
+  image: String,
+  createdAt: { type: Date, default: Date.now },
+});
+const Message = mongoose.model("Message", messageSchema);
+
+const badWords = ['死ね', '殺す', 'dead','くそ','死'];
+
+function censorBadWords(text) {
+  let censoredText = text;
+  badWords.forEach((word) => {
+    const regex = new RegExp(word, 'gi');
+    censoredText = censoredText.replace(regex, '****');
+  });
+  return censoredText;
 }
 
-input[type="text"],
-input[type="file"],
-button {
-  padding: 15px;
-  margin: 5px 0;
-  border: 1px solid #ffffff; 
-  border-radius: 10px;
-  background-color: #070707; 
-  color: #ffffff; 
+// ChatGPT APIを呼び出す関数
+async function analyzeMessage(text) {
+  try {
+    const response = await axios.post('https://api.openai.iniad.org/api/v1/chat/completions', {
+      model: "gpt-4", // または使用したいモデルを設定
+      messages: [
+        {
+          role: "user",
+          content: `以下の文に含まれる不適切な表現を指摘してください: "${text}"`
+        }
+      ],
+      max_tokens: 50,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    console.log(response.data.choices[0].message.content);
+    return response.data.choices[0].message.content;
+  } catch (error) {
+    console.error("ChatGPT API エラー:", error);
+    return null;
+  }
 }
 
-input[type="text"]::placeholder {
-  color: #ffffff; 
-}
+app.post("/api/messages", async (req, res) => {
+  try {
+    const { text, image } = req.body;
 
+    if (!text) {
+      return res.status(400).json({ message: "メッセージが必要です。" });
+    }
 
-/* メッセージリスト */
-.message-list {
-  margin: 10px;
-  max-height: 400px; 
-  overflow-y: auto;
-}
+    const censoredText = censorBadWords(text);
+    const inappropriateFeedback = await analyzeMessage(text);
 
+    const newMessage = new Message({
+      text: censoredText,
+      image: image || null,
+    });
 
+    const savedMessage = await newMessage.save();
+    
+    const isCensored = censoredText !== text;
 
-/* リストスクロール */
-.message-item {
-  border-radius: 5px;
-  padding: 1px;
-  margin: 5px 0;
-  display: flex;
-  justify-content: space-between; 
-  align-items: center;
-}
+    res.status(201).json({
+      savedMessage,
+      isCensored,
+      inappropriateFeedback // 指摘された不適切な表現を返す
+    });
+  } catch (error) {
+    console.error("Error saving message:", error);
+    res.status(500).json({ message: "メッセージ投稿中にエラーが発生しました。" });
+  }
+});
 
+app.get("/api/messages", async (req, res) => {
+  try {
+    const messages = await Message.find().sort({ createdAt: -1 });
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).json({ message: "メッセージの取得中にエラーが発生しました。" });
+  }
+});
 
-/*モーダル操作部分*/
-.modal-header {
-  border: 5px solid #000000; /*縁の色*/ 
-  border-radius: 2px; 
-  background-color: #ff0000; 
-  border-bottom: 6px solid #000000; 
-}
+app.delete("/api/messages/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deletedMessage = await Message.findByIdAndDelete(id);
+    if (deletedMessage) {
+      res.status(200).json({ message: "メッセージが削除されました。" });
+    } else {
+      res.status(404).json({ message: "指定されたメッセージが見つかりません。" });
+    }
+  } catch (error) {
+    console.error("Error deleting message:", error);
+    res.status(500).json({ message: "メッセージ削除中にエラーが発生しました。" });
+  }
+});
 
-.modal-title {
-  font-weight: bold; 
-  font-size: 2rem; 
-}
-
-.modal-body {
-  font-size: 20px; 
-  font-weight: bold; 
-  color: #000000;
-}
-
-.modal-footer {
-  justify-content: flex-end; 
-}
-
-.custom-modal .modal-header {
-  position: relative; 
-  padding: 16px; 
-}
-
-.custom-modal .modal-title {
-  margin-left: 10px; 
-}
-
-.close-button {
-  font-size: 50px; 
-  color: #ffffff;
-  cursor: pointer; 
-  position: absolute; 
-  right: 25px; 
-  top: 2px; 
-}
-
-.modal-footer {
-  display: flex; 
-  justify-content: space-between; 
-  width: 100%; 
-}
-
-.footer-button {
-  flex: 1; 
-  margin: 20 5px;
-}
-
-.footer-button:nth-child(1) {
-  align-self: center; 
-}
-
-.footer-button:nth-child(2) {
-  align-self: center; 
-}
-
-.alert {
-  margin-bottom: 15px;
-}
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
